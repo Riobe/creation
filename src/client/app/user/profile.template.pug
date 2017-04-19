@@ -1,0 +1,19 @@
+div
+  h1 Edit Your Profile
+  hr
+  .col-md-4
+    form(autocomplete="off" novalidate "[formGroup]"="profileForm" "(ngSubmit)"="saveProfile(profileForm.value, $event)")
+      pre.
+        First name: {{profileForm.value?.firstName}}
+      .form-group("[class.error]"="firstNameError()")
+        label(for="firstName") First Name:
+        input#firstName.form-control(type="text", placeholder="First Name..." formControlName="firstName")
+        em("[hidden]"="!firstNameError() || firstNameError() !== 'required'") Required
+        em("[hidden]"="!firstNameError() || firstNameError() !== 'pattern'") Must start with a letter
+      .form-group("[class.error]"="!validateLastName()")
+        label(for="lastName") Last Name:
+        input#lastName.form-control(type="text", placeholder="Last Name..." formControlName="lastName")
+        em("[hidden]"="validateLastName()") Required
+      button.btn.btn-primary(type="submit") Save
+      button.btn.btn-default(type="button" "(click)"="cancel()") Cancel
+      button.btn.btn-warning("(click)"="logout($event)") Logout

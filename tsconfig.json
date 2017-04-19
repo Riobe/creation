@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "outDir": "./src/client/dist",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": ["es2015", "dom"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "es5",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@angular"
+    ]
+  },
+  "include": [
+    "./src/client/app/**/*.ts"
+  ]
+}

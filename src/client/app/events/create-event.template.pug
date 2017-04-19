@@ -1,0 +1,59 @@
+h1 New Event
+hr
+.col-md-6
+  form("#newEventForm"="ngForm" "(ngSubmit)"="saveEvent(newEventForm.value)" autocomplete="off" novalidate)
+    //- Event name
+    .form-group("[ngClass]"="{'error': newEventForm.controls.name?.invalid && newEventForm.controls.name?.touched}")
+      label(for="eventName") Event Name:
+      em("*ngIf"="newEventForm.controls.name?.invalid && (newEventForm.controls.name?.touched)") Required
+      input#name.form-control("(ngModel)"="name" name="name" required type="text" placeholder="Name of your event...")
+    //- Event date
+    .form-group("[ngClass]"="{'error': newEventForm.controls.date?.invalid && newEventForm.controls.date?.touched}")
+      label(for="eventDate") Event Date:
+      em("*ngIf"="newEventForm.controls.date?.invalid && (newEventForm.controls.date?.touched)") Required
+      input#eventDate.form-control("(ngModel)"="date" name="date" required type="text" placeholder="format (mm/dd/yyyy)...")
+    //- Event time
+    .form-group("[ngClass]"="{'error': newEventForm.controls.time?.invalid && newEventForm.controls.time?.touched}")
+      label(for="eventTime") Event Time:
+      em("*ngIf"="newEventForm.controls.time?.invalid && (newEventForm.controls.time?.touched)") Required
+      input#eventTime.form-control("(ngModel)"="time" name="time" required type="text" placeholder="start and end time...")
+    //- Event price
+    .form-group("[ngClass]"="{'error': newEventForm.controls.price?.invalid && newEventForm.controls.price?.touched}")
+      label(for="eventPrice") Event Price:
+      em("*ngIf"="newEventForm.controls.price?.invalid && (newEventForm.controls.price?.touched)") Required
+      input#eventPrice.form-control("(ngModel)"="price" name="price" required type="number" placeholder="event price...")
+
+    //- Location group
+    div(ngModelGroup="location" "#locationGroup"="ngModelGroup" validateLocation)
+      .form-group
+        label(for="address") Event Location:
+        em("*ngIf"="locationGroup?.invalid && locationGroup?.touched")
+          | You must enter either the full location OR an online URL.
+        input#address.form-control("(ngModel)"="address" name="address" type="text" placeholder="Address of event...")
+      .row
+        .col-md-6
+          input#city.form-control("(ngModel)"="city" name="city" type="text" placeholder="City...")
+        .col-md-6
+          input#country.form-control("(ngModel)"="country" name="country" type="text" placeholder="Country...")
+
+    //- Online URL
+    .form-group
+      label(for="onlineUrl") Online Url:
+      input#onlineUrl.form-control("(ngModel)"="onlineUrl" name="onlineUrl" type="text" placeholder="Online Url..." "(change)"="locationGroup.control.controls.address.updateValueAndValidity()")
+
+    //- ImageUrl
+    .form-group("[ngClass]"="{'error': newEventForm.controls.imageUrl?.invalid && newEventForm.controls.imageUrl?.touched}")
+      label(for="imageUrl") Image:
+      em("*ngIf"="newEventForm.controls.imageUrl?.invalid && newEventForm.controls.imageUrl?.touched && newEventForm.controls.imageUrl?.errors.required")
+        | Required
+      em("*ngIf"="newEventForm.controls.imageUrl?.invalid && newEventForm.controls.imageUrl?.touched  && newEventForm.controls.imageUrl?.errors.pattern")
+        | Must be a png or jpg url
+      input#imageUrl.form-control("(ngModel)"="imageUrl" name="imageUrl" required pattern=".*\/.*.(png|jpg)" type="text" placeholder="url of image...")
+      img("[src]"="newEventForm.controls.imageUrl.value" "*ngIf"="newEventForm.controls.imageUrl?.valid")
+    
+    button.btn.btn-primary(type="submit" "[disabled]"="newEventForm.invalid" ) Save
+    button.btn.btn-default(type="button" "(click)"="cancel()") Cancel
+    pre.
+      newEventForm.invalid: {{newEventForm.invalid}}
+      newEventForm.controls.location: {{newEventForm.controls.location?.valid}}
+      newEventForm.controls.onlineUrl: {{newEventForm.controls.onlineUrl?.valid}}

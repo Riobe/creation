@@ -1,0 +1,47 @@
+doctype html
+head
+  title Tutorial - ng2
+
+  base(href='/')
+
+  //- Toastr
+  link(rel='stylesheet' href='toastr/build/toastr.min.css')
+  //- Latest compiled and minified CSS
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous')
+
+  //- Optional theme
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css' integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp' crossorigin='anonymous')
+
+  link(rel='stylesheet', href='css/site.css')
+
+  //- Import any globals that you're going to expose in your angular code
+  //- before you actually import angular, so that when angular goes to
+  //- register it's providers, these things will exist.
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
+  //- Toastr depends on jquery. Import it before jquery for headaches.
+  script(src='toastr/build/toastr.min.js')
+
+  //- Angular 2 dependencies
+  script(src='core-js/client/shim.min.js')
+  script(src='zone.js/dist/zone.js')
+  script(src='rxjs/bundles/Rx.js')
+
+  //- Angualr 2 itself
+  script(src='@angular/core/bundles/core.umd.js')
+  script(src='@angular/common/bundles/common.umd.js')
+  script(src='@angular/compiler/bundles/compiler.umd.js')
+  script(src='@angular/router/bundles/router.umd.js')
+  script(src='@angular/platform-browser/bundles/platform-browser.umd.js')
+  script(src='@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js')
+  //- Forms and HTTP are reliant upon platform-browser already being loaded
+  //- have to be imported after it.
+  script(src='@angular/forms/bundles/forms.umd.js')
+  script(src='@angular/http/bundles/http.umd.js')
+
+  //- And finally... our own app!
+  script(src='js/bundle.js')
+body
+  block content
+
+  //- Latest compiled and minified Bootstrap javaScript
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa' crossorigin='anonymous')

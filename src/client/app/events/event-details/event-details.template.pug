@@ -1,0 +1,47 @@
+.container
+  img.event-image("[src]"="event?.imageUrl", "[alt]"="event?.name")
+  .row
+    .col-md-11
+      h2 {{event?.name | uppercase}}
+  .row
+    .col-md-6
+      div
+        strong Date:
+        |  {{event?.date | date:'shortDate'}}
+      div
+        strong Time:
+        |  {{event?.time}}
+      div
+        strong Price:
+        |  {{event?.price | currency:'USD':true}}
+    .col-md-6
+      address
+        strong Address:
+        br
+        |  {{event?.location?.address}}
+        br
+        |  {{event?.location?.city}}, {{event?.location?.country}}
+
+  .row
+    .col-md-2
+      h3(style="margin:0") Sessions
+    .col-md-7.tab-group
+      .btn-group.btn-group-sm
+        button.btn.btn-default("[class.active]"="sortBy === 'name'" "(click)"="sortBy = 'name'") By Name
+        button.btn.btn-default("[class.active]"="sortBy === 'votes'" "(click)"="sortBy = 'votes'") By Votes
+
+      .btn-group.btn-group-sm
+        button.btn.btn-default("[class.active]"="filterBy === 'all'" "(click)"="filterBy = 'all'") All
+        button.btn.btn-default("[class.active]"="filterBy === 'beginner'" "(click)"="filterBy = 'beginner'") Beginner
+        button.btn.btn-default("[class.active]"="filterBy === 'intermediate'" "(click)"="filterBy = 'intermediate'") Intermediate
+        button.btn.btn-default("[class.active]"="filterBy === 'advanced'" "(click)"="filterBy = 'advanced'") Advanced
+    .col-md-2
+      a("(click)"="addSession()") Add Session
+
+  session-list("*ngIf"="!addMode" "[sessions]"="event?.sessions" "[filterBy]"="filterBy" "[sortBy]"="sortBy" "[eventId]"="event?.id")
+  create-session("*ngIf"="addMode" "(saveNewSession)"="saveNewSession($event)" "(cancelNewSession)"="cancelNewSession()")
+  collapsible-well
+    div(well-title)
+      | Debug: Event stringified
+    div(well-body)
+      span {{debugEvent}}

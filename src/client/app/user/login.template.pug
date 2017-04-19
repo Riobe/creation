@@ -1,0 +1,27 @@
+h1 Login
+hr
+.col-md-4
+  form("#loginForm"="ngForm" "(ngSubmit)"="login(loginForm, $event)" autocomplete='off' novalidate)
+    pre.
+      User Name value: {{user.value}}
+      User Name valid: {{user.valid}}
+      Password value: {{pw.value}}
+      Password valid: {{pw.valid}}
+      Password touched: {{pw.touched}}
+      Password valid (alternate): {{loginForm.controls.password?.valid}}
+      Form value: {{JSON.stringify(loginForm.value)}}
+      Form valid: {{loginForm.valid}}
+      mouseoverLogin: {{mouseoverLogin}}
+    .form-group
+      label(for='userName') User Name:
+      em("[hidden]"="user.valid || (!user.touched && !mouseoverLogin)") Required
+      input#userName.form-control(type='text' placeholder='User Name...' name="userName" ngModel required "#user"="ngModel")
+    .form-group
+      label(for='password') Password:
+      em("[hidden]"="pw.valid || (!pw.touched && !mouseoverLogin)") Required
+      input#password.form-control(type='password' placeholder='Password...' ngModel required name="password" "#pw"="ngModel")
+    span("(mouseenter)"="mouseoverLogin=true" "(mouseleave)"="mouseoverLogin=false")
+      button.btn.btn-primary(type='submit' "[disabled]"="loginForm.invalid") Login
+    button.btn.btn-default(type='button' "(click)"="cancel()") Cancel
+  br
+  .alert.alert-danger("*ngIf"="loginInvalid") Invalid Login

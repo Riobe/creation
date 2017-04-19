@@ -1,0 +1,19 @@
+@import '../../sass/imports/colors';
+
+.pad-left {
+  margin-left: 10px;
+}
+
+.thumbnail {
+  min-height: 260px;
+  background: darken($primary-color, 15%);
+}
+
+.green {
+  color: #050 !important;
+}
+
+.bold {
+  font-weight: bold;
+}
+

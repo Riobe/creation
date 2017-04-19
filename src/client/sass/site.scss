@@ -1,0 +1,19 @@
+@import './imports/colors';
+
+body {
+  background-color: $primary-color;
+}
+
+em {
+  float:right;
+  color: #E05C65;
+  padding-left: 10px;
+}
+
+.error {
+  input, select, textarea{
+    background-color: #E3C3C5;
+  }
+
+  @include placeholder-text-color(#999);
+}

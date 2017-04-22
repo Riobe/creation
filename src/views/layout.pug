@@ -23,23 +23,23 @@ head
 
   //- Angular 2 dependencies
   script(src='core-js/client/shim.min.js')
-  script(src='zone.js/dist/zone.js')
-  script(src='rxjs/bundles/Rx.js')
+  script(src='zone.js/dist/zone.min.js')
+  script(src='rxjs/bundles/Rx.min.js')
 
   //- Angualr 2 itself
-  script(src='@angular/core/bundles/core.umd.js')
-  script(src='@angular/common/bundles/common.umd.js')
-  script(src='@angular/compiler/bundles/compiler.umd.js')
-  script(src='@angular/router/bundles/router.umd.js')
-  script(src='@angular/platform-browser/bundles/platform-browser.umd.js')
-  script(src='@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js')
+  script(src='@angular/core/bundles/core.umd.min.js')
+  script(src='@angular/common/bundles/common.umd.min.js')
+  script(src='@angular/compiler/bundles/compiler.umd.min.js')
+  script(src='@angular/router/bundles/router.umd.min.js')
+  script(src='@angular/platform-browser/bundles/platform-browser.umd.min.js')
+  script(src='@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.min.js')
   //- Forms and HTTP are reliant upon platform-browser already being loaded
   //- have to be imported after it.
-  script(src='@angular/forms/bundles/forms.umd.js')
-  script(src='@angular/http/bundles/http.umd.js')
+  script(src='@angular/forms/bundles/forms.umd.min.js')
+  script(src='@angular/http/bundles/http.umd.min.js')
 
   //- And finally... our own app!
-  script(src='js/bundle.js')
+  script(src='js/app.bundle.js')
 body
   block content
 

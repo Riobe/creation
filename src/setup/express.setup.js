@@ -6,7 +6,6 @@ const express = require('express'),
       logger = require('morgan'),
       cookieParser = require('cookie-parser'),
       bodyParser = require('body-parser'),
-      sassMiddleware = require('node-sass-middleware'),
       chalk = require('chalk'),
       log = require('debug')('creation:setup:express');
 
@@ -22,12 +21,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(sassMiddleware({
-  src: path.join(__dirname, '..', 'client', 'static', 'sass'),
-  dest: path.join(__dirname, '..', 'client', 'dist', 'css'),
-  indentedSyntax: false, // true = .sass and false = .scss
-  sourceMap: true
-}));
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 app.use('/@angular', express.static(path.resolve('./node_modules/@angular')));
 app.use('/zone.js', express.static(path.resolve('./node_modules/zone.js')));

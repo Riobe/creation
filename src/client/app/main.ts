@@ -3,7 +3,7 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app.module';
 
-document.addEventListener('DOMContentLoaded', () => {
+export function bootstrapApp() {
   platformBrowserDynamic().bootstrapModule(AppModule)
     .then(success => {
       console.log('Angular has been boostrapped.');
@@ -11,4 +11,4 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => {
       console.error(err);
     });
-});
+}

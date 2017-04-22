@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs'),
+      path = require('path'),
       nopt = require('nopt'),
       webpack = require('webpack'),
       strip = require('strip-loader');
@@ -20,19 +21,18 @@ options.prod = options.prod || process.env.NODE_ENV === 'production';
  * Entry: (String || [String])
  * Entry point to start bundling from.
  */
-config.entry = [
-  projectConfig.paths.client.app.main
-];
+config.entry = {
+  app: projectConfig.paths.client.app.main
+};
 
 /**
  * ouput: Object
  * Configure where the bundled file will be created.
  */
 config.output = {
-  path: __dirname + '/src/client/dist/js',
-  filename: 'bundle.js',
+  path: path.resolve('./src/client/dist/js'),
+  filename: '[name].bundle.js',
   publicPath: '/js/'
-  //filename: projectConfig.paths.client.app.bundle
 };
 
 /**
@@ -45,7 +45,22 @@ config.output = {
 /**
  * devtool: Technique for creating sourcemaps.
  */
-config.devtool = 'source-map';
+config.devtool = 'inline-source-map';
+
+/**
+ * stats: string|object
+ * The stats option lets you precisely control what bundle information gets
+ * displayed. This can be a nice middle ground if you don't want to use quiet or
+ * noInfo because you want some bundle information, but not all of it.
+ */
+config.stats = {
+  chunks: false,
+  colors: true,
+  maxModules: 0,
+  version: false,
+  modules: false,
+  warnings: false
+};
 
 /**
  * resolve: Object
@@ -54,7 +69,7 @@ config.devtool = 'source-map';
 config.resolve = {
   // We're using webpack to bundle our client code, which is typescript, so
   // start with the ts extension.
-  extensions: ['.ts', 'js', '.json']
+  extensions: ['.ts', '.js']
 };
 
 /**
@@ -66,16 +81,14 @@ config.module = { rules: [] };
 // Compile *.ts files
 config.module.rules.push({
   test: /\.ts$/,
-  //loader: 'awesome-typescript-loader'
   loaders: [
-    'awesome-typescript-loader',
+    {
+      loader: 'awesome-typescript-loader',
+      options: {
+        silent: true
+      }
+    },
     'angular-router-loader'
-    //{
-      //loader: 'angular-router-loader',
-      //options: {
-        //debug: true
-      //}
-    //}
   ]
 });
 
@@ -145,5 +158,3 @@ if (options.prod) {
     compress: { warnings: true }
   }));
 }
-
-

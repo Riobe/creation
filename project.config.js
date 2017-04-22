@@ -1,5 +1,11 @@
 'use strict';
 
+const nopt = require('nopt');
+
+let options = nopt({ prod: Boolean }, {});
+
+options.prod = options.prod || process.env.NODE_ENV === 'production';
+
 let config = module.exports = {
   paths: {},
   options: {},
@@ -12,12 +18,23 @@ config.paths = {
   tmp: './.tmp/',
   client: {
     dir: './src/client/',
-    ts: './src/client/**/*.ts',
+    ts: [
+      './src/client/**/*.ts',
+      '!**/*.spec.ts'
+    ],
     static: './src/client/static/',
     sass: './src/client/sass/**/*.scss',
     app: {
+      dir: './src/client/app/',
       ts: './src/client/app/**/*.ts',
-      main: './src/client/app/main.ts',
+      main: options.prod ?
+        './src/client/app/prod.ts' :
+        './src/client/app/dev.ts',
+      source: [
+        '!./src/client/app/**/*.spec.ts',
+        './src/client/app/**/*.ts',
+      ],
+      tests: './src/client/app/**/*.spec.ts',
       bundle: './src/client/dist/js/bundle.js'
     }
   },
@@ -44,7 +61,7 @@ config.options = {
     env: {
       PORT: config.options.port,
       NODE_ENV: 'dev',
-      DEBUG: 'creation'
+      DEBUG: 'creation:*'
     },
     watch: [config.paths.server.dir],
     ignore: [config.paths.client.dir]

@@ -2,7 +2,6 @@
 
 // TODO: Make browser-sync stop reloading on deleted files.
 // TODO: Add jscs tasks to linting
-// TODO: Add any testing at all.
 
 const gulp = require('gulp-help')(require('gulp'), {
         hideEmpty: true,
@@ -13,11 +12,13 @@ const gulp = require('gulp-help')(require('gulp'), {
       }),
       inspect = require('util').inspect,
       fs = require('fs'),
+      path = require('path'),
       nopt = require('nopt'),
       through = require('through2'),
       del = require('del'),
       webpack = require('webpack'),
       browserSync = require('browser-sync').create(),
+      karma = require('karma'),
       plugins = require('gulp-load-plugins')({ lazy: true });
 
 let userConfig = fs.existsSync('./user.config.js'),
@@ -159,6 +160,37 @@ function source(paths, opts, callback) {
     gulp.src(paths, opts);
 }
 
+function tslint(paths, config, taskName) {
+  return source(paths)
+    .pipe(printVerbose(taskName))
+    .pipe(plugins.tslint({
+      configuration: config,
+      formatter: 'prose'
+    }))
+    .pipe(through.obj(function accumulateFailures(file, enc, done) {
+      this.push(file);
+
+      // If the task is being watched, the end will never fire to log out from
+      // and the user will never get a "You fixed your errors" confirmation.
+      // So if it's a watch and the file is clean, log out such. The add event
+      // is skipped cause every file throws an add event as watch first sees it
+      // and new files are generally somewhat empty.
+      if (options.watch &&
+        (file.tslint && file.tslint.failures && !file.tslint.failures.length) &&
+        file.event !== 'add') {
+        let path = file.path.substr(file.cwd.length);
+
+        log(colors.green('tslint: ') + colors.cyan(path));
+      }
+      done();
+    }))
+    .pipe(plugins.tslint.report({
+      emitError: true,
+      reportLimit: 0,
+      summarizeFailureOutput: true
+    }));
+}
+
 // =============================================================================
 // Tasks - Build
 // =============================================================================
@@ -221,11 +253,11 @@ gulp.task('clean:css', done => {
 // =============================================================================
 gulp.task('lint',
   'Lint the server with jshint, and the client with tslint.',
-  ['lint:jshint', 'lint:tslint']);
+  ['lint:jshint', 'lint:tslint', 'lint:tslint:spec']);
 
 gulp.task('lint:jshint', () => {
   return source(config.paths.server.js)
-    .pipe(printVerbose('lint:jslint'))
+    .pipe(printVerbose('lint:jshint'))
     .pipe(plugins.jshint())
     .pipe(through.obj(function accumulateFailures(file, enc, done) {
       this.push(file);
@@ -240,7 +272,7 @@ gulp.task('lint:jshint', () => {
         file.event !== 'add') {
         let path = file.path.substr(file.cwd.length);
 
-        log(colors.green(`jslint: ${path}`));
+        log(colors.green(`jshint: ${path}`));
       }
       done();
     }))
@@ -248,43 +280,56 @@ gulp.task('lint:jshint', () => {
 });
 
 gulp.task('lint:tslint', () => {
-  return source(config.paths.client.ts)
-    .pipe(printVerbose('lint:tslint'))
-    .pipe(plugins.tslint({
-      configuration: './tslint.json',
-      formatter: 'prose'
-    }))
-    .pipe(through.obj(function accumulateFailures(file, enc, done) {
-      this.push(file);
+  return tslint(config.paths.client.app.source, './tslint.json', 'lint:tslint');
+});
 
-      // If the task is being watched, the end will never fire to log out from
-      // and the user will never get a "You fixed your errors" confirmation.
-      // So if it's a watch and the file is clean, log out such. The add event
-      // is skipped cause every file throws an add event as watch first sees it
-      // and new files are generally somewhat empty.
-      if (options.watch &&
-        (file.tslint && file.tslint.failures && !file.tslint.failures.length) &&
-        file.event !== 'add') {
-        let path = file.path.substr(file.cwd.length);
-
-        log(colors.green('tslint: ') + colors.cyan(path));
-      }
-      done();
-    }))
-    .pipe(plugins.tslint.report({
-      emitError: true,
-      reportLimit: 0,
-      summarizeFailureOutput: true
-    }));
+gulp.task('lint:tslint:spec', () => {
+  return tslint(config.paths.client.app.tests, './tslint.spec.json', 'lint:tslint:spec');
 });
 
 // =============================================================================
 // Tasks - Test
 // =============================================================================
-gulp.task('test', 'Runs the projects unit tests.', () => {
-  return source( './src/**/*.spec.js', {read: false}, sources => {
-    sources
-      .pipe(plugins.mocha({reporter: 'spec'}));
+gulp.task('test', 'Runs the project\'s unit tests.', done => {
+  let karmaConfig = karma.config.parseConfig(path.resolve('./karma.conf.js'), {
+    singleRun: true
+  });
+
+  if (!options.watch) {
+    return new karma.Server(karmaConfig, () => {
+      log('Client tests ran.');
+      done();
+      process.exit();
+    }).start();
+  }
+
+  karmaConfig.files.pop();
+
+  gulp.watch('src/client/app/**/*.ts', (event) => {
+    if (!event.path.endsWith('spec.ts')) {
+      let searchMessage = colors.yellow('Looking for spec file for: ');
+      searchMessage += colors.magenta(event.path.substr(process.cwd().length));
+      logVerbose(searchMessage);
+
+      let specPath = event.path.replace(/\.ts$/, '.spec.ts');
+      if (!fs.existsSync(specPath)) {
+        let bailMessage = colors.yellow('No spec file found for file: ');
+        bailMessage += colors.magenta(event.path.substr(process.cwd().length));
+        logVerbose(bailMessage);
+
+        return;
+      }
+      event.path = specPath;
+    }
+
+    let logMessage = colors.yellow('Testing: ');
+    logMessage += colors.magenta(event.path.substr(process.cwd().length));
+    log(logMessage);
+    karmaConfig.files.push(event.path);
+
+    new karma.Server(karmaConfig, () => {
+      karmaConfig.files.pop();
+    }).start();
   });
 });
 
@@ -311,7 +356,7 @@ gulp.task('run', 'Runs the program using nodemon/browser-sync for auto-reloading
 // =============================================================================
 gulp.task('default',
   'Run, build, and lint the project with the watch & verbose flags.',
-  ['build', 'run', 'lint'],
+  ['build', 'run', 'test', 'lint'],
   noop,
   {
     aliases: ['dev']

@@ -4,7 +4,8 @@
   "main": "./src/index.js",
   "private": true,
   "scripts": {
-    "start": "node ./src/index.js"
+    "start": "node ./src/index.js",
+    "prod": "pm2 start ecosystem.config.js --env production"
   },
   "dependencies": {
     "@angular/common": "^4.0.1",

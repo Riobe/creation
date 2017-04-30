@@ -8,7 +8,7 @@
     "dev": "gulp dev",
     "help": "gulp help",
     "lint": "gulp lint",
-    "prod": "pm2 start ecosystem.config.js --env production",
+    "prod": "gulp build --prod && pm2 start ecosystem.config.js --env production",
     "start": "gulp run",
     "test": "gulp test"
   },

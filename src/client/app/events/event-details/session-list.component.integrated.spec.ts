@@ -1,7 +1,7 @@
 'use strict';
 
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA, SimpleChanges } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import {
   BrowserDynamicTestingModule,
@@ -81,7 +81,7 @@ describe('SessionListComponent', function() {
       component.sortBy = 'name';
       component.eventId = 4;
 
-      component.ngOnChanges();
+      component.ngOnChanges({} as SimpleChanges);
       fixture.detectChanges();
 
       // The following two assertions are different ways of doing the same thing.

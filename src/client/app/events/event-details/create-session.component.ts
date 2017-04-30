@@ -7,8 +7,7 @@ import { restrictedWords } from '../../validators';
 
 @Component({
   selector: 'create-session',
-  template: require('./create-session.template.pug')(),
-  // styles: [require('./event-details.styles.scss')]
+  templateUrl: './create-session.template.pug'
 })
 export class CreateSessionComponent implements OnInit {
   @Output() public saveNewSession = new EventEmitter();

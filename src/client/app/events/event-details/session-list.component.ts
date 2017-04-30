@@ -1,14 +1,14 @@
 'use strict';
 
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AuthService } from '../../user/services';
 import { VoterService } from '../services';
 import { ISession } from '../models';
 
 @Component({
   selector: 'session-list',
-  template: require('./session-list.template.pug')(),
-  styles: [require('./session-list.styles.scss')]
+  templateUrl: './session-list.template.pug',
+  styleUrls: ['./session-list.styles.scss']
 })
 export class SessionListComponent implements OnChanges {
   @Input() public sessions: ISession[];
@@ -22,7 +22,7 @@ export class SessionListComponent implements OnChanges {
     votes: this.sortByVotes
   };
 
-  constructor(private authService: AuthService, private voterService: VoterService) { }
+  constructor(public authService: AuthService, public voterService: VoterService) { }
 
   public filterSessions(filter: string) {
     if (filter === 'all') {
@@ -54,7 +54,7 @@ export class SessionListComponent implements OnChanges {
     return this.voterService.userHasVoted(session, this.authService.currentUser.userName);
   }
 
-  public ngOnChanges() {
+  public ngOnChanges(changes: SimpleChanges) {
     if (!this.sessions) {
       return;
     }

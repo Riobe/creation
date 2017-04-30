@@ -4,7 +4,10 @@ const fs = require('fs'),
       path = require('path'),
       nopt = require('nopt'),
       webpack = require('webpack'),
-      strip = require('strip-loader');
+      strip = require('strip-loader'),
+      AotPlugin = require('@ngtools/webpack').AotPlugin,
+      HtmlWebpackPlugin = require('html-webpack-plugin');
+      //BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 let config = module.exports = {};
 
@@ -31,21 +34,21 @@ config.entry = {
  */
 config.output = {
   path: path.resolve('./src/client/dist/js'),
-  filename: '[name].bundle.js',
+  filename: '[name].[chunkhash].bundle.js',
   publicPath: '/js/'
 };
 
 /**
- * watch: Boolean
- * Configure whether or not to watch. Can be sent in on cli or require.
- * Being set by gulp right now.
- */
-//config.watch = true;
-
-/**
  * devtool: Technique for creating sourcemaps.
  */
-config.devtool = 'inline-source-map';
+config.devtool = options.prod ?
+  // Source map version that only maps errors and doesn't expose the map to the browser dev tools
+  'hidden-source-map' :
+  // This version creates the source map as a separate file
+  'source-map';
+
+// Use this version to have the source map as inline comment with the map in DataUrl
+// config.devtool = 'inline-source-map';
 
 /**
  * stats: string|object
@@ -55,6 +58,7 @@ config.devtool = 'inline-source-map';
  */
 config.stats = {
   chunks: false,
+  children: false,
   colors: true,
   maxModules: 0,
   version: false,
@@ -76,50 +80,81 @@ config.resolve = {
  * module: Object
  * Rules for how to process different modules. Can call loaders.
  */
-config.module = { rules: [] };
-
-// Compile *.ts files
-config.module.rules.push({
-  test: /\.ts$/,
-  loaders: [
-    {
-      loader: 'awesome-typescript-loader',
-      options: {
-        silent: true
-      }
-    },
-    'angular-router-loader'
-  ]
-});
+config.module = { };
+let rules = config.module.rules = [];
 
 if (options.prod) {
   // Strip console logging for production.
-  config.module.rules.push({
+  rules.push({
     test: /\.ts$/,
     loader: strip.loader('console.log', 'console.error')
+  });
+
+  rules.push({
+    test: /\.ts/,
+    loader: '@ngtools/webpack'
+  });
+} else {
+  //Compile *.ts files
+  config.module.rules.push({
+    test: /\.ts$/,
+    loaders: [
+      {
+        loader: 'awesome-typescript-loader',
+        options: {
+          silent: true
+        }
+      },
+      'angular2-template-loader'
+      // Our AOT build doesn't allow for lazy loading yet. Figure out how to make it work.
+      // 'angular-router-loader'
+    ]
   });
 }
 
 // Handle SASS transpiling
-config.module.rules.push({
+rules.push({
   test: /\.scss$/,
   use: [ 'raw-loader', 'sass-loader' ]
 });
 
 // Handle pug transpiling
-config.module.rules.push({
+rules.push({
   test: /\.pug$/,
-  loader: 'pug-loader'
+  loaders: [
+    {
+      loader: 'apply-loader',
+      options: {
+        obj: {
+          ENV: options.prod ? 'production' : 'development'
+        }
+      }
+    },
+    {
+      loader: 'pug-loader',
+      options: {
+        globals: {
+        }
+      }
+    }
+  ]
 });
 
 // Embed files
-config.module.rules.push({
+rules.push({
   test: /\.html$/,
-  loader: 'raw-loader',
+  use: [
+    {
+      loader: 'html-loader',
+      options: {
+        minimize: false
+      }
+    }
+  ]
 });
 
 // Create source maps
-config.module.rules.push({
+rules.push({
   // All output js files will have sourcemaps re-processed by source-map-loader
   enforce: 'pre',
   test: /\.js$/,
@@ -134,27 +169,76 @@ config.module.rules.push({
  *
  * This stops us from bundling our dependencies into our own code.
  */
-config.externals = {
-  '@angular/core': 'ng.core',
-  '@angular/common': 'ng.common',
-  '@angular/compiler': 'ng.compiler',
-  '@angular/platform-browser': 'ng.platformBrowser',
-  '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
-  '@angular/forms': 'ng.forms',
-  '@angular/http': 'ng.http',
-  '@angular/router': 'ng.router',
-  'zone': 'Zone',
-  'rxjs': 'Rx'
-};
+config.externals = {};
+
+/**
+ * externals: Object
+ * Do not follow/bundle these values when imported/required. Instead, use the
+ * mapping and assume there will be an object in the global space with the
+ * value's name.
+ *
+ * This stops us from bundling our dependencies into our own code.
+ */
+config.externals = options.prod ?
+  {} :
+  {
+    '@angular/core': 'ng.core',
+    '@angular/common': 'ng.common',
+    '@angular/compiler': 'ng.compiler',
+    '@angular/platform-browser': 'ng.platformBrowser',
+    '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
+    '@angular/forms': 'ng.forms',
+    '@angular/http': 'ng.http',
+    '@angular/router': 'ng.router',
+    'zone': 'Zone',
+    'rxjs': 'Rx'
+  };
 
 /**
  * plugins: [Object]
  * Plugins to modify the behavior of webpack.
  */
-config.plugins = [];
+let plugins = config.plugins = [];
+
+plugins.push(new webpack.optimize.UglifyJsPlugin({
+  sourceMap: true,
+  compress: { warnings: true }
+}));
+
+plugins.push(new HtmlWebpackPlugin({
+  filename: '../index.html',
+  template: projectConfig.paths.client.app.template
+}));
+
+plugins.push(new webpack.optimize.CommonsChunkPlugin({
+  name: 'vendor',
+  filename: 'vendor.[chunkhash].bundle.js',
+  minChunks: module => {
+    let context = module.context;
+    return context && context.indexOf('node_modules') >= 0;
+  }
+}));
+
+plugins.push(new webpack.optimize.CommonsChunkPlugin({
+  name: 'manifest',
+  minChunks: Infinity
+}));
 
 if (options.prod) {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    compress: { warnings: true }
+  plugins.push(new AotPlugin({
+    tsConfigPath: './tsconfig.aot.json',
+    entryModule: path.resolve('./src/client/app/app.module#AppModule')
   }));
+
+  if (options.verbose) {
+    plugins.push(new webpack.ProgressPlugin());
+  }
 }
+
+/**
+  * If you need to debug bundling, this bundle analyzer plugin
+  * can be used to inspect the contents of the bundles.
+  */
+// config.plugins.push(
+//   new BundleAnalyzerPlugin()
+// );

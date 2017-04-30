@@ -1,5 +1,6 @@
 'use strict';
 
+import { SimpleChanges } from '@angular/core';
 import { SessionListComponent } from './session-list.component';
 import { ISession } from './../models';
 
@@ -25,7 +26,7 @@ describe('SessionListComponent', function() {
       component.sortBy = 'name';
       component.eventId = 3;
 
-      component.ngOnChanges();
+      component.ngOnChanges({} as SimpleChanges);
 
       expect(component.visibleSessions[2]).to.have.property('name', 'session 3');
     });
@@ -40,7 +41,7 @@ describe('SessionListComponent', function() {
       component.sortBy = 'name';
       component.eventId = 3;
 
-      component.ngOnChanges();
+      component.ngOnChanges({} as SimpleChanges);
 
       expect(component.visibleSessions).to.have.lengthOf(2);
     });

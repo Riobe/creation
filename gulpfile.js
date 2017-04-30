@@ -1,8 +1,5 @@
 'use strict';
 
-// TODO: Make browser-sync stop reloading on deleted files.
-// TODO: Add jscs tasks to linting
-
 const gulp = require('gulp-help')(require('gulp'), {
         hideEmpty: true,
         aliases: [
@@ -29,15 +26,38 @@ let userConfig = fs.existsSync('./user.config.js'),
     webpackCompiler = webpack(webpackConfig),
     colors = plugins.util.colors;
 
+// Use consistent colors everywhere, so pull out the ones we want.
+let cWarning = colors.bold.yellow,
+    cVerbose = colors.yellow,
+    cSuccess = colors.green,
+    cTask = colors.blue,
+    cPath = colors.magenta,
+    cValue = colors.cyan;
+
 // =============================================================================
 // Option parsing
 // =============================================================================
 let possibleOptions = {
-  'verbose': Boolean, // For verbose logging from most tasks
+  'build': Boolean, // Controls building in non-build tasks.
+  'lint': Boolean, // Controls linting in non-lint tasks.
+  'open': Boolean, // Used to open the app when running.
+  'run': Boolean, // Controls running in non-run tasks.
+  'silent': Boolean, // Suppress all logging
+  'test': Boolean, // Controls testing in non-lint tasks.
+  'verbose': Boolean, // To watch any task that supports it.
   'watch': Boolean, // To watch any task that supports it.
 };
 
-let shorthandOptions = { };
+let shorthandOptions = {
+  'B': ['--no-build'],
+  'O': ['--no-open'],
+  's': ['--silent'],
+  'w': ['--watch'],
+  'W': ['--no-watch'],
+  // Cannot do this. Gulp itself eats the -v flag.
+  // 'v': ['--verbose'],
+  'V': ['--no-verbose']
+};
 
 let options = nopt(possibleOptions, shorthandOptions, process.argv);
 
@@ -47,11 +67,23 @@ function defaultOptionValue(key, value) {
   }
 }
 
-let task = options.argv.cooked.find(option => !option.startsWith('-')) || 'default';
+let task = options.argv.cooked.find(option => !option.startsWith('-'));
+task = task || 'default';
 
 if (task === 'default' || task === 'dev') {
+  defaultOptionValue('build', true);
+  defaultOptionValue('open', true);
+  defaultOptionValue('lint', true);
+  defaultOptionValue('run', true);
+  defaultOptionValue('test', true);
   defaultOptionValue('watch', true);
   defaultOptionValue('verbose', true);
+}
+
+if (task === 'run') {
+  options.run = true;
+  defaultOptionValue('build', false);
+  defaultOptionValue('open', true);
 }
 
 webpackConfig.watch = options.watch;
@@ -66,7 +98,7 @@ webpackConfig.watch = options.watch;
  */
 function log(message) {
   if (typeof message === 'object') {
-    plugins.util.log(colors.cyan(inspect(message, { depth: 8 })));
+    plugins.util.log(cValue(inspect(message, { depth: 8 })));
     return;
   }
 
@@ -99,7 +131,7 @@ function noop() {}
 function clean(paths, done) {
   return del(paths).then(paths => {
     if (paths.length) {
-      logVerbose('Deleted files/folders:\n' + colors.magenta(paths.join('\n')));
+      logVerbose('Deleted files/folders:\n' + cPath(paths.join('\n')));
     } else {
       logVerbose('No files to delete.');
     }
@@ -121,7 +153,7 @@ function printVerbose(task) {
   let printer;
   if (task) {
     printer = function(filepath) {
-      return `${colors.yellow(task)}: ${colors.magenta(filepath)}`;
+      return `${cTask(task)}: ${cPath(filepath)}`;
     };
   }
 
@@ -136,7 +168,8 @@ function printVerbose(task) {
  *
  * @param {(string|string[])} paths - Glob(s) of paths to source.
  * @param {Object} [opts] - Options to pass to gulp.src/gulp-watch.
- * @param {function} [callback] - Callback to handle piping on sources. Use when plugin relies on end/flush event.
+ * @param {function} [callback] - Callback to handle piping on sources.
+ *                                Use when plugin relies on end/flush event.
  */
 function source(paths, opts, callback) {
   if (typeof opts === 'function') { callback = opts; }
@@ -160,103 +193,97 @@ function source(paths, opts, callback) {
     gulp.src(paths, opts);
 }
 
-function tslint(paths, config, taskName) {
-  return source(paths)
-    .pipe(printVerbose(taskName))
-    .pipe(plugins.tslint({
-      configuration: config,
-      formatter: 'prose'
-    }))
-    .pipe(through.obj(function accumulateFailures(file, enc, done) {
-      this.push(file);
+/**
+ * The examples in browser-sync all refer to using browserSync.active to
+ * protect against init'ing browser-sync when it's already running. They don't,
+ * however, handle calling init twice before the first call has finished. By
+ * using memoization this function will protect itself against that.
+ */
+let initBrowserSync = (function() {
+  let initializing = false;
 
-      // If the task is being watched, the end will never fire to log out from
-      // and the user will never get a "You fixed your errors" confirmation.
-      // So if it's a watch and the file is clean, log out such. The add event
-      // is skipped cause every file throws an add event as watch first sees it
-      // and new files are generally somewhat empty.
-      if (options.watch &&
-        (file.tslint && file.tslint.failures && !file.tslint.failures.length) &&
-        file.event !== 'add') {
-        let path = file.path.substr(file.cwd.length);
+  function init() {
+    if (browserSync.active || initializing) {
+      return;
+    }
 
-        log(colors.green('tslint: ') + colors.cyan(path));
-      }
-      done();
-    }))
-    .pipe(plugins.tslint.report({
-      emitError: true,
-      reportLimit: 0,
-      summarizeFailureOutput: true
-    }));
-}
+    initializing = true;
 
-// =============================================================================
-// Tasks - Build
-// =============================================================================
-gulp.task('build',
-  'Build the client site into ./src/client/dist/',
-  ['build:webpack', 'build:static', 'build:sass']);
+    let browserSyncConfig = config.options.browserSync;
+    browserSyncConfig.open = options.open;
 
-gulp.task('build:webpack', done => {
-  if (options.watch) {
-    webpackCompiler.watch({}, (err, stats) => {
-      log(stats.toString({
-        chunks: false,
-        colors: true
-      }));
+    // Workaround to handle browser-sync ignoring watchEvents
+    // https://github.com/BrowserSync/browser-sync/issues/1367
+    browserSyncConfig.files = browserSyncConfig.files.map(pattern => {
+      return {
+        match: pattern,
+        fn: event => {
+          if (!['add', 'change'].includes(event)) {
+            return;
+          }
+
+          browserSync.reload();
+        }
+      };
     });
-  } else {
-    webpackCompiler.run((err, stats) => {
-      log(stats.toString({
-        chunks: false,
-        colors: true
-      }));
+
+    browserSync.init(browserSyncConfig, () => {
+      initializing = false;
     });
   }
-  done();
-});
 
-gulp.task('build:static', ['clean:static'], () => {
-  return source(config.helpers.staticFilesIn(config.paths.client.static))
-    .pipe(printVerbose('build:static - write'))
-    .pipe(gulp.dest(config.paths.dist));
-});
-
-// For site-wide styles. Don't use for angular component styles. Require
-// those in.
-gulp.task('build:sass', ['clean:css'], () => {
-  return source(config.paths.client.sass)
-    .pipe(printVerbose('build:sass - read'))
-    .pipe(plugins.sass().on('error', plugins.sass.logError))
-    .pipe(gulp.dest(config.paths.dist + 'css/'))
-    .pipe(printVerbose('build:sass - write'));
-});
+  return init;
+})();
 
 // =============================================================================
-// Tasks - Cleaning files.
+// Tasks Functions
 // =============================================================================
-gulp.task('clean', done => {
-  clean(config.paths.dist, done);
-});
 
-gulp.task('clean:static', done => {
-  clean(config.helpers.staticFilesIn(config.paths.dist), done);
-});
+// Linting =====================================================================
 
-gulp.task('clean:css', done => {
-  clean(config.paths.client.dist + 'css/**/*.css', done);
-});
+/**
+ * Lint the client typescript with tslint.
+ */
+function tslint(paths, config, taskName) {
+  return () => {
+    return source(paths, {ignoreInitial: options.watch})
+      .pipe(printVerbose(taskName))
+      .pipe(plugins.tslint({
+        configuration: config,
+        formatter: 'prose'
+      }))
+      .pipe(through.obj(function accumulateFailures(file, enc, done) {
+        this.push(file);
 
-// =============================================================================
-// Tasks - Code quality
-// =============================================================================
-gulp.task('lint',
-  'Lint the server with jshint, and the client with tslint.',
-  ['lint:jshint', 'lint:tslint', 'lint:tslint:spec']);
+        // If the task is being watched, the end will never fire to log out from
+        // and the user will never get a "You fixed your errors" confirmation.
+        // So if it's a watch and the file is clean, log out such. The add event
+        // is skipped cause every file throws an add event as watch first sees
+        // it and new files are generally somewhat empty.
+        if (options.watch &&
+          (file.tslint &&
+            file.tslint.failures &&
+            !file.tslint.failures.length) &&
+          file.event !== 'add') {
+          let path = file.path.substr(file.cwd.length);
 
-gulp.task('lint:jshint', () => {
-  return source(config.paths.server.js)
+          log(cSuccess('tslint: ') + cPath(path));
+        }
+        done();
+      }))
+      .pipe(plugins.tslint.report({
+        emitError: true,
+        reportLimit: 0,
+        summarizeFailureOutput: true
+      }));
+  };
+}
+
+/**
+ * Lint the server side javascript with jshint.
+ */
+function jshint() {
+  return source(config.paths.server.js, {ignoreInitial: options.watch})
     .pipe(printVerbose('lint:jshint'))
     .pipe(plugins.jshint())
     .pipe(through.obj(function accumulateFailures(file, enc, done) {
@@ -272,25 +299,126 @@ gulp.task('lint:jshint', () => {
         file.event !== 'add') {
         let path = file.path.substr(file.cwd.length);
 
-        log(colors.green(`jshint: ${path}`));
+        log(cSuccess('jshint: ') + cPath(path));
       }
       done();
     }))
     .pipe(plugins.jshint.reporter('jshint-stylish'));
-});
+}
 
-gulp.task('lint:tslint', () => {
-  return tslint(config.paths.client.app.source, './tslint.json', 'lint:tslint');
-});
+/**
+ * Style check the server side javascript with jscs.
+ */
+function jscs() {
+  return source(config.paths.server.js)
+    .pipe(plugins.jscs())
+    .pipe(plugins.jscs.reporter());
+}
 
-gulp.task('lint:tslint:spec', () => {
-  return tslint(config.paths.client.app.tests, './tslint.spec.json', 'lint:tslint:spec');
-});
+// Building ====================================================================
 
-// =============================================================================
-// Tasks - Test
-// =============================================================================
-gulp.task('test', 'Runs the project\'s unit tests.', done => {
+/**
+ * Build using webpack.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function buildWebpack(done) {
+  let callback = complete => {
+    return (err, stats) => {
+      log(stats.toString(webpackConfig.stats));
+      if (options.open) { initBrowserSync(); }
+      if (complete) { complete(); }
+    };
+  };
+
+  if (options.watch) {
+    webpackCompiler.watch({}, callback());
+  } else {
+    webpackCompiler.run(callback(done));
+  }
+}
+
+/**
+ * Copy static files into the dist/ directory.
+ */
+function buildStatic() {
+  return source(config.helpers.staticFilesIn(config.paths.client.static))
+    .pipe(printVerbose('build:static - write'))
+    .pipe(gulp.dest(config.paths.dist));
+}
+
+/**
+ * Build site-wide styles. For those we aren't using webpack (it's overkill)
+ * and instead are just using node-sass via gulp-sass.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function buildSass() {
+  return source(config.paths.client.sass)
+    .pipe(printVerbose('build:sass - read'))
+    .pipe(plugins.sass().on('error', plugins.sass.logError))
+    .pipe(gulp.dest(config.paths.dist + 'css/'))
+    .pipe(printVerbose('build:sass - write'));
+}
+
+// Cleaning ====================================================================
+
+/**
+ * Delete the entire dist/ directory.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function deleteDist(done) {
+  clean(config.paths.dist, done);
+}
+
+/**
+ * Delete the static files out of the dist/ directory.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function deleteStaticFiles(done) {
+  clean(config.helpers.staticFilesIn(config.paths.dist), done);
+}
+
+/**
+ * Delete the css out of the dist/ directory.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function deleteCss(done) {
+  clean(config.paths.client.dist + 'css/**/*.css', done);
+}
+
+/**
+ * Delete the js out of the dist/ directory.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function deleteJs(done) {
+  clean([
+    config.paths.dist + 'js/**/*.js',
+    config.paths.dist + 'js/**/*.js.map'
+  ], done);
+}
+
+/**
+ * Delete the webpack generated index out of the dist/ directory.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function deleteIndex(done) {
+  clean(config.paths.dist + 'index.html', done);
+}
+
+// Testing =====================================================================
+
+/**
+ * Runs the browsers tests on our Angular 2 code using karma.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function runBrowserTests(done) {
   let karmaConfig = karma.config.parseConfig(path.resolve('./karma.conf.js'), {
     singleRun: true
   });
@@ -307,14 +435,14 @@ gulp.task('test', 'Runs the project\'s unit tests.', done => {
 
   gulp.watch('src/client/app/**/*.ts', (event) => {
     if (!event.path.endsWith('spec.ts')) {
-      let searchMessage = colors.yellow('Looking for spec file for: ');
-      searchMessage += colors.magenta(event.path.substr(process.cwd().length));
+      let searchMessage = cVerbose('Looking for spec file for: ');
+      searchMessage += cPath(event.path.substr(process.cwd().length));
       logVerbose(searchMessage);
 
       let specPath = event.path.replace(/\.ts$/, '.spec.ts');
       if (!fs.existsSync(specPath)) {
-        let bailMessage = colors.yellow('No spec file found for file: ');
-        bailMessage += colors.magenta(event.path.substr(process.cwd().length));
+        let bailMessage = cVerbose('No spec file found for file: ');
+        bailMessage += cPath(event.path.substr(process.cwd().length));
         logVerbose(bailMessage);
 
         return;
@@ -322,8 +450,8 @@ gulp.task('test', 'Runs the project\'s unit tests.', done => {
       event.path = specPath;
     }
 
-    let logMessage = colors.yellow('Testing: ');
-    logMessage += colors.magenta(event.path.substr(process.cwd().length));
+    let logMessage = cVerbose('Testing: ');
+    logMessage += cPath(event.path.substr(process.cwd().length));
     log(logMessage);
     karmaConfig.files.push(event.path);
 
@@ -331,34 +459,108 @@ gulp.task('test', 'Runs the project\'s unit tests.', done => {
       karmaConfig.files.pop();
     }).start();
   });
-});
+}
 
-// =============================================================================
-// Tasks - Running
-// =============================================================================
-gulp.task('run', 'Runs the program using nodemon/browser-sync for auto-reloading.', () => {
+// Running =====================================================================
+
+/**
+ * Runs the project using nodemon for the server and browser-sync for the
+ * client. Only intended to be used in development.
+ */
+function runProject() {
+  if (options.prod) {
+    // Still allow this so that devs can test that things work when AOT built,
+    // but warn that this is not acceptable in production.
+    let warning = 'Do not run the project in production using "gulp run".';
+    log(cWarning(warning));
+  }
+
   return plugins.nodemon(config.options.nodemon)
     .on('start', () => {
-      if (browserSync.active) {
-        return;
-      }
-
       logVerbose('Nodemon starting.');
-      browserSync.init(config.options.browserSync);
+
+      // If we're not building (or not opening at all) then we can go ahead and
+      // init the server, which will open it (if that was specified).
+      // Otherwise we need to wait until the build is done so there is
+      // something to show.
+      if (!options.build) {
+        initBrowserSync();
+      }
     })
     .on('restart', () => {
       logVerbose('Nodemon restarting.');
     });
-});
+}
 
 // =============================================================================
-// Tasks - Default
+// Tasks
 // =============================================================================
+
+// Linting =====================================================================
+gulp.task('lint',
+  'Lint the server with jshint, and the client with tslint.',
+  ['lint:jshint', 'lint:jscs', 'lint:tslint', 'lint:tslint:spec']);
+
+gulp.task('lint:jshint', jshint);
+gulp.task('lint:jscs', jscs);
+gulp.task('lint:tslint',
+  tslint(config.paths.client.app.source, './tslint.json', 'lint:tslint'));
+gulp.task('lint:tslint:spec',
+  tslint(config.paths.client.app.source,
+    './tslint.spec.json',
+    'lint:tslint:spec'));
+
+// Builing =====================================================================
+gulp.task('build',
+  'Build the client site into ./src/client/dist/',
+  ['build:webpack', 'build:static', 'build:sass']);
+
+gulp.task('build:webpack', ['clean:js', 'clean:index'], buildWebpack);
+gulp.task('build:static', ['clean:static'], buildStatic);
+gulp.task('build:sass', ['clean:css'], buildSass);
+
+// Cleaning ====================================================================
+gulp.task('clean', deleteDist);
+gulp.task('clean:static', deleteStaticFiles);
+gulp.task('clean:css', deleteCss);
+gulp.task('clean:js', deleteJs);
+gulp.task('clean:index', deleteIndex);
+
+// Testing =====================================================================
+gulp.task('test', 'Runs the project\'s unit tests.', runBrowserTests);
+
+// Running =====================================================================
+let runDependencies = ['run:nodemon'];
+if (options.build) {
+  runDependencies.push('build');
+}
+
+gulp.task('run',
+  'Runs the program using nodemon/browser-sync for auto-reloading.',
+  runDependencies,
+  noop,
+  {
+    options: {
+      'no-build -B': 'Do not build the application, just run.',
+      'no-open -O': 'Do not open a browser on startup.'
+    }
+  });
+
+gulp.task('run:nodemon', runProject);
+
+// Default =====================================================================
+let defaultDependencies = [];
+if (options.build) { defaultDependencies.push('build'); }
+if (options.run) { defaultDependencies.push('run'); }
+if (options.test) { defaultDependencies.push('test'); }
+if (options.lint) { defaultDependencies.push('lint'); }
+
+if (!defaultDependencies.length) { defaultDependencies.push('help'); }
+
 gulp.task('default',
-  'Run, build, and lint the project with the watch & verbose flags.',
-  ['build', 'run', 'test', 'lint'],
+  'Run, build, test and lint the project with the watch & verbose flags.',
+  defaultDependencies,
   noop,
   {
     aliases: ['dev']
   });
-

@@ -4,8 +4,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'upvote',
-  template: require('./upvote.template.pug')(),
-  styles: [require('./upvote.styles.scss')]
+  templateUrl: './upvote.template.pug',
+  styleUrls: ['./upvote.styles.scss']
 })
 export class UpvoteComponent {
   @Input() public count: number;

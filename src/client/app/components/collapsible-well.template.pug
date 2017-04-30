@@ -1,5 +1,6 @@
+doctype html
+
 .well.pointable("(click)"="toggleContent()")
-  h4.well-title {{title}}
   h4
     ng-content(select="[well-title]")
   ng-content("*ngIf"="visible" select="[well-body]")

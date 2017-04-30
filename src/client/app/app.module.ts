@@ -5,9 +5,10 @@
 // Angular
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { RouterModule, PreloadAllModules } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Events
 import {
@@ -39,6 +40,7 @@ import { NavBarComponent } from './nav/navbar.component';
 import { Error404Component } from './errors/404.component';
 import {
   CollapsibleWellComponent,
+  KendoDemoComponent,
   SimpleModalComponent
 } from './components';
 
@@ -48,9 +50,12 @@ import {
   IToastr,
   JQUERY_TOKEN
 } from './services';
+
 // Globally defined.
-declare const toastr: IToastr;
-declare const $: object;
+/* tslint:disable:no-string-literal */
+let toastr = window['toastr'],
+  $ = window['$'];
+/* tslint:enable:no-string-literal */
 
 // Pipes
 import { DurationPipe } from './pipes';
@@ -60,14 +65,27 @@ import { ModalTriggerDirective } from './directives';
 
 // Misc
 import { routes } from './routes';
+import { UserModule } from './user/user.module';
+
+export function checkDirtyState(component) {
+  if (component.isDirty) {
+    return window.confirm('You have not saved this event, do you really want to cancel?');
+  }
+
+  return true;
+}
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(routes),
-    HttpModule
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: PreloadAllModules
+    }),
+    HttpModule,
+    UserModule,
+    BrowserAnimationsModule
   ],
   declarations: [
     EventsAppComponent,
@@ -84,7 +102,8 @@ import { routes } from './routes';
     UpvoteComponent,
     Error404Component,
     ModalTriggerDirective,
-    DurationPipe
+    DurationPipe,
+    KendoDemoComponent
   ],
   providers: [
     EventService,
@@ -108,11 +127,3 @@ import { routes } from './routes';
   bootstrap: [ EventsAppComponent ]
 })
 export class AppModule { }
-
-function checkDirtyState(component) {
-  if (component.isDirty) {
-    return window.confirm('You have not saved this event, do you really want to cancel?');
-  }
-
-  return true;
-}

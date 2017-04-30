@@ -1,20 +1,9 @@
+doctype html
+
 .well.hoverwell.thumbnail("[hidden]"="event" "[routerLink]"="['/event', event.id]")
   //- img("[src]"="event.imageUrl")
   h2 {{event.name | uppercase}}
   div Date: {{event.date | date:'shortDate'}}
-  //- Binding to an individual class.
-  //- div("[class.green]"="event?.time === "8:00 am"" "[ngSwitch]"="event?.time") Time: {{event.time}}
-
-  //- Binding classes to an object.
-  //- Addative with normal class tag.
-  //- div("[ngClass]"="{green: event?.time === "8:00 am", bold: event?.time == "8:00 am"}" "[ngSwitch]"="event?.time") Time: {{event.time}}
-
-  //- Binding a style value directly instead of using class
-  //- div("[style.color]"="event?.time === "8:00 am" ? "#050" : "#bbb"" "[ngSwitch]"="event?.time") Time: {{event.time}}
-
-  //- Binding a multiple styles value directly instead of using class (Can use function like with ngClass)
-  //- Addative with normal style tag.
-  //- div("[ngStyle]"="{color: event?.time === "8:00 am" ? "#050" : "#bbb", "font-weight": event?.time === "8:00 am" ? "bold" : "normal"}" "[ngSwitch]"="event?.time") Time: {{event.time}}
 
   div("[ngClass]"="earlyStartClasses()" "[ngSwitch]"="event?.time") Time: {{event.time}}
     span("*ngSwitchCase"="'8:00 am'")  (Early Start)

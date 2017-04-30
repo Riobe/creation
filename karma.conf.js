@@ -1,7 +1,9 @@
 'use strict';
 
 const fs = require('fs'),
-      webpackConfig = require('./webpack.config.js');
+      webpackConfig = Object.assign({}, require('./webpack.config.js'));
+
+webpackConfig.plugins = [];
 
 let projectConfig = fs.existsSync('./user.config.js') ?
       require('./user.config.js') :

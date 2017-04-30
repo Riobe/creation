@@ -13,9 +13,14 @@
       "mocha"
     ]
   },
+  "compileOnSave": true,
   "exclude": [
     "node_modules/*",
-    "src/client/app/prod.ts",
+    "src/client/app/dev.ts",
     "src/client/app/**/*.spec.ts"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "genDir": "./src/client/app/aot",
+    "skipMetadataEmit": true
+  }
 }

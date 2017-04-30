@@ -40,7 +40,6 @@ import { NavBarComponent } from './nav/navbar.component';
 import { Error404Component } from './errors/404.component';
 import {
   CollapsibleWellComponent,
-  KendoDemoComponent,
   SimpleModalComponent
 } from './components';
 
@@ -102,8 +101,7 @@ export function checkDirtyState(component) {
     UpvoteComponent,
     Error404Component,
     ModalTriggerDirective,
-    DurationPipe,
-    KendoDemoComponent
+    DurationPipe
   ],
   providers: [
     EventService,

@@ -6,8 +6,8 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from './services';
 
 @Component({
-  template: require('./login.template.pug')(),
-  styles: [require('./login.styles.scss')]
+  templateUrl: './login.template.pug',
+  styleUrls: ['./login.styles.scss']
 })
 export class LoginComponent {
   public JSON: any;
@@ -15,7 +15,7 @@ export class LoginComponent {
   public mouseoverLogin: boolean;
   public loginInvalid: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(public authService: AuthService, public router: Router) {
     this.JSON = JSON;
     this.Object = Object;
     this.mouseoverLogin = false;

@@ -5,8 +5,8 @@ import { IEvent } from './models';
 
 @Component({
   selector: 'event-thumbnail',
-  template: require('./event-thumbnail.template.pug')(),
-  styles: [require('./event-thumbnail.styles.scss')]
+  templateUrl: './event-thumbnail.template.pug',
+  styleUrls: ['./event-thumbnail.styles.scss']
 })
 export class EventThumbnailComponent {
   @Input() public event: IEvent;

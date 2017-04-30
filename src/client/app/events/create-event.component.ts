@@ -5,14 +5,22 @@ import { Router } from '@angular/router';
 import { EventService } from './services';
 
 @Component({
-  template: require('./create-event.template.pug')(),
-  styles: [require('./create-event.styles.scss')]
+  templateUrl: './create-event.template.pug'
 })
 export class CreateEventComponent {
   public event;
   public isDirty = true;
+  public name: string;
+  public date: string;
+  public time: string;
+  public price: number;
+  public address: string;
+  public city: string;
+  public country: string;
+  public onlineUrl: string;
+  public imageUrl: string;
 
-  constructor(private router: Router, private eventService: EventService) { }
+  constructor(public router: Router, public eventService: EventService) { }
 
   public saveEvent(formValues) {
     console.log(formValues);

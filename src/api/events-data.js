@@ -137,7 +137,7 @@ module.exports = [
           of the United States through his amazing programming skills,
           showing how you too can be success with just attitude.`,
         voters: ['bradgreen']
-      },
+      }
     ]
   },
   {
@@ -219,7 +219,7 @@ module.exports = [
           to use directives in your Angular 4 development while drawing lessons from the new movie,
           featuring all your favorite characters like Han Solo's ghost and Darth Jar Jar.`,
         voters: ['bradgreen', 'martinfowler']
-      },
+      }
     ]
   },
   {
@@ -268,7 +268,7 @@ module.exports = [
           the latest Destiny DLC, but we can still improve the massages they give and the handmade
           brie they make using Angular 4. This session will show you how.`,
         voters: ['igorminar', 'johnpapa']
-      },
+      }
     ]
   },
   {
@@ -307,26 +307,6 @@ module.exports = [
           Dan Wahlin will show you how you can get started with Angular in 60ish minutes,
           guaranteed!`,
         voters: ['bradgreen', 'igorminar', 'johnpapa']
-      }
-    ]
-  },
-  {
-    id: 6,
-    name: 'ZSG Rocket League',
-    date: '11/13/2099',
-    time: '8:00 am',
-    price: 0.05,
-    imageUrl: 'images/angular.png',
-    onlineUrl: 'http://tiltedpeak.com/zsg',
-    sessions: [
-      {
-        id: 1,
-        name: 'How to freestyle when no one\'s looking',
-        presenter: 'Aeon Genesis',
-        duration: 1,
-        level: 'Intermediate',
-        abstract: ``,
-        voters: ['figit', 'dynamic']
       }
     ]
   }

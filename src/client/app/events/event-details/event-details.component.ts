@@ -6,8 +6,8 @@ import { EventService } from '../services/event.service';
 import { IEvent, ISession } from '../models';
 
 @Component({
-  template: require('./event-details.template.pug')(),
-  styles: [require('./event-details.styles.scss')]
+  templateUrl: './event-details.template.pug',
+  styleUrls: ['./event-details.styles.scss']
 })
 export class EventDetailsComponent implements OnInit {
   public event: IEvent;
@@ -16,7 +16,7 @@ export class EventDetailsComponent implements OnInit {
   public sortBy: string = 'votes';
   public debugEvent: string;
 
-  constructor(private eventService: EventService, private route: ActivatedRoute) { }
+  constructor(public eventService: EventService, public route: ActivatedRoute) { }
 
   public addSession() {
     this.addMode = true;

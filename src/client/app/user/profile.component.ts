@@ -7,17 +7,17 @@ import { AuthService } from './services';
 import { TOASTR_TOKEN, IToastr } from '../services';
 
 @Component({
-  template: require('./profile.template.pug')(),
-  styles: [require('./profile.styles.scss')]
+  templateUrl: './profile.template.pug',
+  styleUrls: ['./profile.styles.scss']
 })
 export class ProfileComponent implements OnInit {
   public profileForm: FormGroup;
   public firstName: FormControl;
   public lastName: FormControl;
 
-  constructor(private router: Router,
-              private authService: AuthService,
-              @Inject(TOASTR_TOKEN) private toastr: IToastr) {
+  constructor(public router: Router,
+              public authService: AuthService,
+              @Inject(TOASTR_TOKEN) public toastr: IToastr) {
   }
 
   public ngOnInit() {

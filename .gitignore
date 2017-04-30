@@ -1,5 +1,6 @@
 ### Project ###
 src/client/dist
+user.config.js
 
 # Created by https://www.gitignore.io/api/node,vim
 

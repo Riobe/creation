@@ -1,3 +1,5 @@
+doctype html
+
 .row("*ngFor"="let session of visibleSessions")
   .col-md-1
     upvote("*ngIf"="authService.isAuthenticated()" "(vote)"="toggleVote(session)" "[count]"="session.voters.length" "[voted]"="userHasVoted(session)")

@@ -9,7 +9,8 @@ options.prod = options.prod || process.env.NODE_ENV === 'production';
 let config = module.exports = {
   paths: {},
   options: {},
-  helpers: {}
+  helpers: {},
+  vendors: []
 };
 
 config.paths = {
@@ -35,6 +36,7 @@ config.paths = {
         './src/client/app/**/*.ts',
       ],
       tests: './src/client/app/**/*.spec.ts',
+      template: './src/views/index.pug',
       bundle: './src/client/dist/js/bundle.js'
     }
   },
@@ -70,7 +72,8 @@ config.options = {
     proxy: 'localhost:' + config.options.port,
     port: config.options.port + 1,
     files: [
-      config.paths.dist + '**/*',
+      config.paths.dist + 'js/**/*.js',
+      config.paths.dist + 'css/**/*.css',
       config.paths.server.pug
     ],
     ghostMode: {
@@ -81,7 +84,7 @@ config.options = {
     },
     injectChanges: true,
     logFileChanges: true,
-    logLevel: 'debug',
+    logLevel: 'info',
     logPrefix: 'browser-sync',
     notify: true
   }
@@ -113,4 +116,16 @@ config.helpers = {
   }
 };
 
-
+config.vendors = [
+  '@angular/platform-browser',
+  '@angular/platform-browser-dynamic',
+  '@angular/core',
+  '@angular/common',
+  '@angular/http',
+  '@angular/router',
+  '@angular/forms',
+  '@angular/compiler',
+  'core-js',
+  'zone.js',
+  'rxjs'
+];

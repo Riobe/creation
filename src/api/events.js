@@ -74,7 +74,7 @@ router.post('/:id/sessions/:sessionId/voters/:voterName', (req, res) => {
     verb: 'POST',
     eventId: eventId,
     sessionId: sessionId,
-    voterName: voterName,
+    voterName: voterName
   });
 
   let event = data.find(event => event.id === eventId);

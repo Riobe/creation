@@ -1,7 +1,11 @@
 @import './imports/colors';
 
 body {
-  background-color: $primary-color;
+  background-color: $color-bg-primary;
+}
+
+.navbar {
+  background-color: $color-bg-secondary;
 }
 
 em {

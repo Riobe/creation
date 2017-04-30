@@ -1,19 +1,10 @@
 'use strict';
 
-import '@angular/platform-browser';
-import '@angular/core';
-import '@angular/common';
-import '@angular/http';
-import '@angular/router';
-import '@angular/forms';
-
-import 'rxjs';
-
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { AppModule } from './app.module';
+import { CreationModule } from './creation.module';
 
 document.addEventListener('DOMContentLoaded', () => {
-  platformBrowserDynamic().bootstrapModule(AppModule)
+  platformBrowserDynamic().bootstrapModule(CreationModule)
     .then(success => {
       console.log('Angular has been boostrapped.');
     })

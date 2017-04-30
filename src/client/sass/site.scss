@@ -17,3 +17,9 @@ em {
 
   @include placeholder-text-color(#999);
 }
+
+.errorMessage { 
+  margin-top:150px; 
+  font-size: 170px;
+  text-align: center; 
+}

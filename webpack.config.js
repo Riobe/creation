@@ -227,7 +227,7 @@ plugins.push(new webpack.optimize.CommonsChunkPlugin({
 if (options.prod) {
   plugins.push(new AotPlugin({
     tsConfigPath: './tsconfig.aot.json',
-    entryModule: path.resolve('./src/client/app/app.module#AppModule')
+    entryModule: path.resolve('./src/client/app/creation.module#CreationModule')
   }));
 
   if (options.verbose) {

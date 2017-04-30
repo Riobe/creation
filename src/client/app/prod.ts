@@ -10,11 +10,11 @@ import '@angular/forms';
 import 'rxjs';
 
 import { platformBrowser } from '@angular/platform-browser';
-import { AppModuleNgFactory } from './aot/src/client/app/app.module.ngfactory';
+import { CreationModuleNgFactory } from './aot/src/client/app/creation.module.ngfactory';
 import { enableProdMode } from '@angular/core';
 
 enableProdMode();
 
 document.addEventListener('DOMContentLoaded', () => {
-  platformBrowser().bootstrapModuleFactory(AppModuleNgFactory);
+  platformBrowser().bootstrapModuleFactory(CreationModuleNgFactory);
 });

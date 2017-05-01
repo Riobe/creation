@@ -14,6 +14,8 @@ import { HomeComponent } from './home.component';
 import { NavBarComponent } from './navbar.component';
 import { Error404Component } from './shared/errors';
 
+import { CharactersService } from './shared/services';
+
 // The following are all external libraries.
 import {
   TOASTR_TOKEN,
@@ -48,7 +50,8 @@ let toastr = window['toastr'],
     {
       provide: JQUERY_TOKEN,
       useValue: $
-    }
+    },
+    CharactersService
   ],
   bootstrap: [ CreationComponent ]
 })

@@ -1,8 +1,18 @@
 'use strict';
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CharactersService } from './shared/services';
 
 @Component({
   templateUrl: './home.template.pug'
 })
-export class HomeComponent {}
+export class HomeComponent implements OnInit {
+  public character;
+  constructor(public charactersService: CharactersService) {}
+
+  public ngOnInit() {
+    this.charactersService.getCharacter(1).subscribe(character => {
+      this.character = JSON.stringify(character, null, 2);
+    });
+  }
+}

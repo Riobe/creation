@@ -1,12 +1,12 @@
 $primary-color: hsl(210, 96%, 89%);
 
 $color-bg-primary: rgb(228, 223, 221);
-$color-bg-secondary: rgb(228, 223, 221);
-$color-font: rgb(228, 223, 221);
-$color-header-primary: rgb(228, 223, 221);
-$color-header-secondary: rgb(228, 223, 221);
-$color-inset-primary: rgb(228, 223, 221);
-$color-inset-secondary: rgb(228, 223, 221);
+$color-bg-secondary: rgb(208, 137, 221);
+$color-font: rgb(0, 23, 108);
+$color-header-primary: rgb(179, 25, 65);
+$color-header-secondary: rgb(201, 102, 65);
+$color-inset-primary: rgb(233, 187, 110);
+$color-inset-secondary: rgb(171, 183, 218);
 
 @mixin placeholder-text-color($color) {
   ::-webkit-input-placeholder { color: $color; }

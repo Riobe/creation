@@ -51,6 +51,7 @@ app.use('/api/login', require('../api/login'));
 app.use('/api/logout', require('../api/logout'));
 app.use('/api/users', require('../api/users'));
 app.use('/api/current-identity', require('../api/current-identity'));
+app.use('/api/characters', require('../api/characters.routes'));
 
 // =============================================================================
 // Web catch-all route

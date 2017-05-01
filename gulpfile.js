@@ -506,7 +506,7 @@ gulp.task('lint:jscs', jscs);
 gulp.task('lint:tslint',
   tslint(config.paths.client.app.source, './tslint.json', 'lint:tslint'));
 gulp.task('lint:tslint:spec',
-  tslint(config.paths.client.app.source,
+  tslint(config.paths.client.app.tests,
     './tslint.spec.json',
     'lint:tslint:spec'));
 

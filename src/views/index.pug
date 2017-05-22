@@ -4,38 +4,31 @@ head
 
   base(href='/')
 
-  //- Toastr
-  link(rel='stylesheet' href='toastr/build/toastr.min.css')
-  //- Latest compiled and minified CSS
-  link(rel='stylesheet' href='bootstrap/dist/css/bootstrap.min.css')
-
-  //- Optional theme
-  link(rel='stylesheet' href='bootstrap/dist/css/bootstrap-theme.min.css')
-
+  link(rel='stylesheet', href='vendor/primeng/primeng.min.css')
   link(rel='stylesheet', href='css/site.css')
 
   //- Import any globals that you're going to expose in your angular code
   //- before you actually import angular, so that when angular goes to
   //- register it's providers, these things will exist.
-  script(src='jquery/dist/jquery.min.js')
-  //- Toastr depends on jquery. Import it before jquery for headaches.
-  script(src='toastr/build/toastr.min.js')
-  script(src='zone.js/dist/zone.min.js')
-  script(src='reflect-metadata/Reflect.js')
+  script(src='vendor/jquery/dist/jquery.min.js')
+  script(src='vendor/zone.js/dist/zone.min.js')
+  script(src='vendor/reflect-metadata/Reflect.js')
 
   if (ENV === 'development')
-    script(src='rxjs/bundles/Rx.min.js')
-    script(src='@angular/core/bundles/core.umd.min.js')
-    script(src='@angular/common/bundles/common.umd.min.js')
-    script(src='@angular/compiler/bundles/compiler.umd.min.js')
-    script(src='@angular/platform-browser/bundles/platform-browser.umd.min.js')
-    script(src='@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.min.js')
-    script(src='@angular/http/bundles/http.umd.min.js')
-    script(src='@angular/router/bundles/router.umd.min.js')
-    script(src='@angular/animations/bundles/animations.umd.min.js')
-    script(src='@angular/forms/bundles/forms.umd.min.js')
+    script(src='vendor/rxjs/bundles/Rx.js')
+    script(src='vendor/@angular/core/bundles/core.umd.js')
+    script(src='vendor/@angular/common/bundles/common.umd.js')
+    script(src='vendor/@angular/compiler/bundles/compiler.umd.js')
+    script(src='vendor/@angular/platform-browser/bundles/platform-browser.umd.js')
+    script(src='vendor/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js')
+    script(src='vendor/@angular/http/bundles/http.umd.js')
+    script(src='vendor/@angular/router/bundles/router.umd.js')
+    script(src='vendor/@angular/animations/bundles/animations.umd.js')
+    script(src='vendor/@angular/forms/bundles/forms.umd.js')
+
+  //- The app bundle is added by webpack.
 body
   creation
 
   //- Latest compiled and minified Bootstrap javaScript
-  script(src='bootstrap/dist/js/bootstrap.min.js')
+  script(src='vendor/bootstrap-sass/assets/javascripts/bootstrap.min.js')

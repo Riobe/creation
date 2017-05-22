@@ -29,8 +29,8 @@ config.paths = {
       dir: './src/client/app/',
       ts: './src/client/app/**/*.ts',
       main: options.prod ?
-        './src/client/app/prod.ts' :
-        './src/client/app/dev.ts',
+      './src/client/app/prod.ts' :
+      './src/client/app/dev.ts',
       source: [
         '!./src/client/app/**/*.spec.ts',
         './src/client/app/**/*.ts',
@@ -52,7 +52,24 @@ config.paths = {
   source: './src/',
   all: {
     ts: './src/**/*.ts'
-  }
+  },
+  vendors: [
+    './node_modules/jquery/dist/**/*',
+    './node_modules/@angular/animations/bundles/**/*',
+    './node_modules/@angular/common/bundles/**/*',
+    './node_modules/@angular/compiler/bundles/**/*',
+    './node_modules/@angular/core/bundles/**/*',
+    './node_modules/@angular/forms/bundles/**/*',
+    './node_modules/@angular/http/bundles/**/*',
+    './node_modules/@angular/platform-browser/bundles/**/*',
+    './node_modules/@angular/platform-browser-dynamic/bundles/**/*',
+    './node_modules/@angular/router/bundles/**/*',
+    './node_modules/rxjs/**/*',
+    './node_modules/zone.js/dist/**/*',
+    './node_modules/reflect-metadata/**/*',
+    './node_modules/bootstrap-sass/assets/javascripts/**/*',
+    './node_modules/primeng/resources/*.css'
+  ]
 };
 
 config.options.port = 3000;
@@ -92,7 +109,7 @@ config.options = {
 
 config.helpers = {
   /** Returns an array of globs for known static files in a given directory.
-   */
+  */
   staticFilesIn: dir => {
     return [
       // Fonts

@@ -354,11 +354,26 @@ function buildStatic() {
  * @param {function} done - Gulp callback to indicate task completion.
  */
 function buildSass() {
-  return source(config.paths.client.sass)
+  if (options.watch) {
+    gulp.watch(config.paths.client.sass, ['build:sass']);
+  }
+
+  return gulp.src(config.paths.client.sass)
     .pipe(printVerbose('build:sass - read'))
-    .pipe(plugins.sass().on('error', plugins.sass.logError))
+    .pipe(plugins.sass({
+      includePaths: [
+        './node_modules'
+      ]
+    }).on('error', plugins.sass.logError))
     .pipe(gulp.dest(config.paths.dist + 'css/'))
     .pipe(printVerbose('build:sass - write'));
+}
+
+function buildVendor() {
+  return gulp.src(config.paths.vendors, {base: 'node_modules'})
+    .pipe(printVerbose('build:vendor - read'))
+    .pipe(gulp.dest(config.paths.dist + 'vendor/'))
+    .pipe(printVerbose('build:vendor - write'));
 }
 
 // Cleaning ====================================================================
@@ -387,7 +402,7 @@ function deleteStaticFiles(done) {
  * @param {function} done - Gulp callback to indicate task completion.
  */
 function deleteCss(done) {
-  clean(config.paths.client.dist + 'css/**/*.css', done);
+  clean(config.paths.dist + 'css/**/*.css', done);
 }
 
 /**
@@ -409,6 +424,15 @@ function deleteJs(done) {
  */
 function deleteIndex(done) {
   clean(config.paths.dist + 'index.html', done);
+}
+
+/**
+ * Delete the webpack generated index out of the dist/ directory.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function deleteVendor(done) {
+  clean(config.paths.dist + 'vendor/', done);
 }
 
 // Testing =====================================================================
@@ -513,11 +537,12 @@ gulp.task('lint:tslint:spec',
 // Builing =====================================================================
 gulp.task('build',
   'Build the client site into ./src/client/dist/',
-  ['build:webpack', 'build:static', 'build:sass']);
+  ['build:webpack', 'build:static', 'build:sass', 'build:vendor']);
 
 gulp.task('build:webpack', ['clean:js', 'clean:index'], buildWebpack);
 gulp.task('build:static', ['clean:static'], buildStatic);
 gulp.task('build:sass', ['clean:css'], buildSass);
+gulp.task('build:vendor', ['clean:vendor'], buildVendor);
 
 // Cleaning ====================================================================
 gulp.task('clean', deleteDist);
@@ -525,6 +550,7 @@ gulp.task('clean:static', deleteStaticFiles);
 gulp.task('clean:css', deleteCss);
 gulp.task('clean:js', deleteJs);
 gulp.task('clean:index', deleteIndex);
+gulp.task('clean:vendor', deleteVendor);
 
 // Testing =====================================================================
 gulp.task('test', 'Runs the project\'s unit tests.', runBrowserTests);

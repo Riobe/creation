@@ -1,11 +1,13 @@
-@import './imports/colors';
+@import "./imports/variables";
+@import './imports/bootstrap-custom';
+@import "./imports/primeng-custom";
 
 body {
-  background-color: $color-bg-primary;
+  background-color: $creation-color-bg-primary;
 }
 
 .navbar {
-  background-color: $color-bg-secondary;
+  background-color: $creation-color-bg-secondary;
 }
 
 em {

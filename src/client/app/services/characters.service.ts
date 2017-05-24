@@ -6,6 +6,8 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
 @Injectable()
 export class CharactersService {
+  public currentCharacter;
+
   constructor(private http: Http) { }
 
   public getCharacter(id): Promise<any> {
@@ -19,6 +21,9 @@ export class CharactersService {
         return event;
       })
       .toPromise()
+      .then(character => {
+        return this.currentCharacter = character;
+      })
       .catch(this.handleError);
   }
 

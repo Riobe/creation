@@ -15,7 +15,10 @@ import { HomeComponent } from './home/home.component';
 import { CharacterCreatorComponent } from './character-creator/character-creator.component';
 import { Error404Component } from './errors/404.component';
 
-import { CharactersService } from './services';
+import {
+  CharactersService,
+  CurrentCharacterResolver
+} from './services';
 
 // The following are all external libraries.
 import {
@@ -53,7 +56,8 @@ let toastr = window['toastr'],
       provide: JQUERY_TOKEN,
       useValue: $
     },
-    CharactersService
+    CharactersService,
+    CurrentCharacterResolver
   ],
   bootstrap: [ CreationComponent ]
 })

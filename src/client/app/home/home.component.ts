@@ -1,6 +1,7 @@
 'use strict';
 
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CharactersService } from '../services';
 
 @Component({
@@ -8,11 +9,10 @@ import { CharactersService } from '../services';
 })
 export class HomeComponent implements OnInit {
   public character;
-  constructor(public charactersService: CharactersService) {}
+  constructor(private route: ActivatedRoute, private charactersService: CharactersService) {}
 
   public ngOnInit() {
-    this.charactersService.getCharacter(1).then(character => {
-      this.character = JSON.stringify(character, null, 2);
-    });
+    let routeCharacter = this.route.snapshot.data.character;
+    this.character = JSON.stringify(routeCharacter, null, 2);
   }
 }

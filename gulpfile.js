@@ -236,6 +236,19 @@ let initBrowserSync = (function() {
 })();
 
 // =============================================================================
+// Fix to webpack to alert when starting build while watching.
+// =============================================================================
+(function() {
+  // This is in an IIFE to keep originalGo out of the module scope. It's only
+  // relevant here.
+  let originalGo = webpack.Compiler.Watching.prototyoe._go;
+  webpack.Compiler.Watching.prototype._go = function() {
+    log (`Starting '${cValue('build:webpack')}' watch build...`);
+    originalGo.bind(this)();
+  };
+})();
+
+// =============================================================================
 // Tasks Functions
 // =============================================================================
 

@@ -88,8 +88,6 @@
 
   // Custom Globals
   "globals"       : {         // additional predefined global variables
-    "Promise": true,
-    "describe": true,
-    "it": true
+    "Promise": true
   }
 }

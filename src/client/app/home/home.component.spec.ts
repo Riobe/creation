@@ -1,50 +1,31 @@
 'use strict';
 
-import { SimpleChanges } from '@angular/core';
-import { SessionListComponent } from './session-list.component';
-import { ISession } from './../models';
+import { HomeComponent } from './home.component';
 
 import { expect } from 'chai';
+import { stub } from 'sinon';
 
-describe('SessionListComponent', function() {
-  let component: SessionListComponent,
-      mockAuthService,
-      mockVoterService;
+describe('HomeComponent', function() {
+  let component: HomeComponent,
+      mockCharactersService,
+      mockCharacter = {
+        name: 'tester'
+      };
 
   beforeEach(function() {
-    component = new SessionListComponent(mockAuthService, mockVoterService);
+    mockCharactersService = {
+      getCharacter: stub().returns(Promise.resolve(mockCharacter))
+    };
+    component = new HomeComponent(mockCharactersService);
   });
 
-  describe('#ngOnChanges', function() {
-    it('should sort the sessions by name correctly', function() {
-      component.sessions = [
-        { name: 'session 1', level: 'intermediate' },
-        { name: 'session 3', level: 'beginner' },
-        { name: 'session 2', level: 'intermediate' }
-      ] as ISession[];
-      component.filterBy = 'all';
-      component.sortBy = 'name';
-      component.eventId = 3;
+  describe('#ngOnInit', function() {
+    it('get an initial character.', function() {
+      component.ngOnInit();
 
-      component.ngOnChanges({} as SimpleChanges);
-
-      expect(component.visibleSessions[2]).to.have.property('name', 'session 3');
-    });
-
-    it('should filter the sessions correctly', function() {
-      component.sessions = [
-        { name: 'session 1', level: 'intermediate' },
-        { name: 'session 2', level: 'intermediate' },
-        { name: 'session 3', level: 'beginner' }
-      ] as ISession[];
-      component.filterBy = 'intermediate';
-      component.sortBy = 'name';
-      component.eventId = 3;
-
-      component.ngOnChanges({} as SimpleChanges);
-
-      expect(component.visibleSessions).to.have.lengthOf(2);
+      expect(mockCharactersService.getCharacter.callCount).to.equal(1);
+      // expect(component.character).to.be.ok;
+      // expect(component.character.name).to.be(JSON.stringify(mockCharacter, null, 2));
     });
   });
 });
-

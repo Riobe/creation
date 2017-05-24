@@ -16,6 +16,6 @@
   "exclude": [
     "node_modules/*",
     "src/client/app/prod.ts",
-    "src/client/app/**/*.spec.ts"
+    "src/client/dist/*"
   ]
 }

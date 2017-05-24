@@ -371,9 +371,7 @@ function buildSass() {
 
 function buildVendor() {
   return gulp.src(config.paths.vendors, {base: 'node_modules'})
-    .pipe(printVerbose('build:vendor - read'))
-    .pipe(gulp.dest(config.paths.dist + 'vendor/'))
-    .pipe(printVerbose('build:vendor - write'));
+    .pipe(gulp.dest(config.paths.dist + 'vendor/'));
 }
 
 // Cleaning ====================================================================

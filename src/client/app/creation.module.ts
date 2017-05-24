@@ -10,7 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { routes } from './creation.routes';
 
 import { CreationComponent } from './creation.component';
-import { HomeComponent } from './home.component';
+import { HomeComponent } from './home/home.component';
 import { NavBarComponent } from './navbar.component';
 import { Error404Component } from './shared/errors';
 

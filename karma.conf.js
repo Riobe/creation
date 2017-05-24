@@ -14,6 +14,9 @@ module.exports = function (config) {
     basePath: '',
     frameworks: ['mocha'],
     files: [
+      // Reflect.js
+      'node_modules/reflect-metadata/Reflect.js',
+
       // Angular 2 dependencies.
       'node_modules/core-js/client/shim.min.js',
       'node_modules/core-js/client/core.js',
@@ -26,7 +29,7 @@ module.exports = function (config) {
       'node_modules/zone.js/dist/async-test.js',
       'node_modules/zone.js/dist/mocha-patch.js',
 
-      // Angualr 2
+      // Angular 2
       'node_modules/@angular/core/bundles/core.umd.js',
       'node_modules/@angular/common/bundles/common.umd.js',
       'node_modules/@angular/compiler/bundles/compiler.umd.js',

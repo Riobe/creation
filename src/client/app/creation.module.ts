@@ -10,11 +10,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { routes } from './creation.routes';
 
 import { CreationComponent } from './creation.component';
-import { HomeComponent } from './home/home.component';
 import { NavBarComponent } from './navbar/navbar.component';
+import { HomeComponent } from './home/home.component';
+import { CharacterCreatorComponent } from './character-creator/character-creator.component';
 import { Error404Component } from './errors/404.component';
 
-import { CharactersService } from './shared/services';
+import { CharactersService } from './services';
 
 // The following are all external libraries.
 import {
@@ -38,8 +39,9 @@ let toastr = window['toastr'],
   ],
   declarations: [
     CreationComponent,
-    HomeComponent,
     NavBarComponent,
+    HomeComponent,
+    CharacterCreatorComponent,
     Error404Component
   ],
   providers: [

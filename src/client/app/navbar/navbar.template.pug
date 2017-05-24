@@ -1,13 +1,18 @@
 doctype html
 
+mixin basicLink(route, header)
+  - var routeLink = "['/" + route + "']";
+  li(routerLinkActive="active")
+    a(href="" "[routerLink]"!=routeLink)= header
+
 .navbar.navbar-default
   .container-fluid
     .navbar-header
       a.navbar-brand Creation
     .collapse.navbar-collapse
       ul.nav.navbar-nav
-        li
-          a(href="" "[routerLink]"="['/home']" routerLinkActive="active" "[routerLinkActiveOptions]"="{exact:true}") Home
+        +basicLink('home', 'Home')
+        +basicLink('character-creator', 'Create')
       .navbar-header.navbar-right
         ul.nav.navbar-nav
           li

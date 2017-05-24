@@ -1,7 +1,7 @@
 'use strict';
 
 import { Component, OnInit } from '@angular/core';
-import { CharactersService } from '../shared/services';
+import { CharactersService } from '../services';
 
 @Component({
   templateUrl: './home.template.pug',

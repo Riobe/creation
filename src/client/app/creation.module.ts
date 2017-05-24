@@ -12,7 +12,7 @@ import { routes } from './creation.routes';
 import { CreationComponent } from './creation.component';
 import { HomeComponent } from './home/home.component';
 import { NavBarComponent } from './navbar/navbar.component';
-import { Error404Component } from './shared/errors';
+import { Error404Component } from './errors/404.component';
 
 import { CharactersService } from './shared/services';
 

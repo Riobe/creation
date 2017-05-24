@@ -3,7 +3,7 @@
 import { Routes } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
-import { Error404Component } from './shared/errors';
+import { Error404Component } from './errors/404.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },

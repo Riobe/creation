@@ -241,7 +241,7 @@ let initBrowserSync = (function() {
 (function() {
   // This is in an IIFE to keep originalGo out of the module scope. It's only
   // relevant here.
-  let originalGo = webpack.Compiler.Watching.prototyoe._go;
+  let originalGo = webpack.Compiler.Watching.prototype._go;
   webpack.Compiler.Watching.prototype._go = function() {
     log (`Starting '${cValue('build:webpack')}' watch build...`);
     originalGo.bind(this)();

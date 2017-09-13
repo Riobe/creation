@@ -1,3 +1,6 @@
+//==============================================================================
+// Colors
+//==============================================================================
 $creation-color-bg-primary: rgb(228, 223, 221);
 $creation-color-bg-secondary: rgb(208, 137, 221);
 $creation-color-font: rgb(0, 23, 108);
@@ -6,9 +9,16 @@ $creation-color-header-secondary: rgb(201, 102, 65);
 $creation-color-inset-primary: rgb(233, 187, 110);
 $creation-color-inset-secondary: rgb(171, 183, 218);
 
+//==============================================================================
+// Fonts
+//==============================================================================
+$creation-font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+$creation-font-size: 1em;
+
 @mixin placeholder-text-color($color) {
   ::-webkit-input-placeholder { color: $color; }
   ::-moz-placeholder { color: $color; }
   :-moz-placeholder { color: $color; }
   :ms-input-placeholder { color: $color; }
 }
+

@@ -6,9 +6,12 @@ const express = require('express'),
       logger = require('morgan'),
       cookieParser = require('cookie-parser'),
       bodyParser = require('body-parser'),
+      uuidv1 = require('uuid/v1'),
       chalk = require('chalk'),
+      requestLog = require('debug')('creation:request'),
       log = require('debug')('creation:setup:express');
 
+log('Setting up express.');
 let app = express();
 
 // =============================================================================
@@ -28,38 +31,37 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use((req, res, next) => {
+  req.id =  uuidv1();
+  req.log = function(message) {
+    requestLog(`${new Date()} - ${req.id} - ${message}`);
+  };
+  next();
+});
 
 // =============================================================================
 // Static routes
 // =============================================================================
-app.use('/@angular', express.static(path.resolve('./node_modules/@angular')));
-app.use('/jquery', express.static(path.resolve('./node_modules/jquery')));
-app.use('/bootstrap', express.static(path.resolve('./node_modules/bootstrap')));
-app.use('/zone.js', express.static(path.resolve('./node_modules/zone.js')));
-app.use('/reflect-metadata', express.static(path.resolve('./node_modules/reflect-metadata')));
-app.use('/rxjs', express.static(path.resolve('./node_modules/rxjs')));
-app.use('/core-js', express.static(path.resolve('./node_modules/core-js')));
-app.use('/toastr', express.static(path.resolve('./node_modules/toastr')));
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+
+// Up and out of src directory and into dist.
+app.use(express.static(path.join(__dirname, '..', '..', 'dist')));
+app.use(express.static(path.resolve('../../dist')));
 
 // =============================================================================
 // API routes
 // =============================================================================
-app.use('/api/users', require('../api/users'));
-app.use('/api/events', require('../api/events'));
-app.use('/api/login', require('../api/login'));
-app.use('/api/logout', require('../api/logout'));
-app.use('/api/users', require('../api/users'));
-app.use('/api/current-identity', require('../api/current-identity'));
-app.use('/api/characters', require('../api/characters.routes'));
+app.use('/api/heartbeat', require('../api/heartbeat'));
 
 // =============================================================================
 // Web catch-all route
 // =============================================================================
-app.get(/^(?!\/api\/)[^\.]*$/, (req, res) => {
-  log(`Requested ${chalk.cyan(req.path)}, returning ${chalk.yellow('index')}.`);
-  res.sendfile(path.resolve('./src/client/dist/index.html'));
-});
+
+function returnIndex(req, res) {
+  res.sendfile(path.resolve('./dist/index.html'));
+}
+app.get('/', returnIndex);
+app.get('/index.htm', returnIndex);
+app.get('/index.html', returnIndex);
 
 // =============================================================================
 // Error handling

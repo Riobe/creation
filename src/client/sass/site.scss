@@ -3,27 +3,3 @@
 body {
   background-color: $creation-color-bg-primary;
 }
-
-.navbar {
-  background-color: $creation-color-bg-secondary;
-}
-
-em {
-  float:right;
-  color: #E05C65;
-  padding-left: 10px;
-}
-
-.error {
-  input, select, textarea{
-    background-color: #E3C3C5;
-  }
-
-  @include placeholder-text-color(#999);
-}
-
-.errorMessage { 
-  margin-top:150px; 
-  font-size: 170px;
-  text-align: center; 
-}

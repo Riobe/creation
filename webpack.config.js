@@ -5,7 +5,6 @@ const fs = require('fs'),
       nopt = require('nopt'),
       webpack = require('webpack'),
       strip = require('strip-loader'),
-      AotPlugin = require('@ngtools/webpack').AotPlugin,
       HtmlWebpackPlugin = require('html-webpack-plugin');
       //BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -33,9 +32,9 @@ config.entry = {
  * Configure where the bundled file will be created.
  */
 config.output = {
-  path: path.resolve('./src/client/dist/js'),
+  path: path.resolve('./dist/js'),
   filename: '[name].[chunkhash].bundle.js',
-  publicPath: '/js/'
+  publicPath: 'js/'
 };
 
 /**
@@ -86,31 +85,10 @@ let rules = config.module.rules = [];
 if (options.prod) {
   // Strip console logging for production.
   rules.push({
-    test: /\.ts$/,
+    test: /\.js$/,
     loader: strip.loader('console.log', 'console.error')
   });
-
-  rules.push({
-    test: /\.ts/,
-    loader: '@ngtools/webpack'
-  });
-} else {
-  //Compile *.ts files
-  config.module.rules.push({
-    test: /\.ts$/,
-    loaders: [
-      {
-        loader: 'awesome-typescript-loader',
-        options: {
-          silent: true
-        }
-      },
-      'angular2-template-loader'
-      // Our AOT build doesn't allow for lazy loading yet. Figure out how to make it work.
-      // 'angular-router-loader'
-    ]
-  });
-}
+} 
 
 // Handle SASS transpiling
 rules.push({
@@ -225,11 +203,6 @@ plugins.push(new webpack.optimize.CommonsChunkPlugin({
 }));
 
 if (options.prod) {
-  plugins.push(new AotPlugin({
-    tsConfigPath: './tsconfig.aot.json',
-    entryModule: path.resolve('./src/client/app/creation.module#CreationModule')
-  }));
-
   if (options.verbose) {
     plugins.push(new webpack.ProgressPlugin());
   }

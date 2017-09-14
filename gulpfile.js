@@ -255,48 +255,10 @@ let initBrowserSync = (function() {
 // Linting =====================================================================
 
 /**
- * Lint the client typescript with tslint.
- */
-function tslint(paths, config, taskName) {
-  return () => {
-    return source(paths, {ignoreInitial: options.watch})
-      .pipe(printVerbose(taskName))
-      .pipe(plugins.tslint({
-        configuration: config,
-        formatter: 'prose'
-      }))
-      .pipe(through.obj(function accumulateFailures(file, enc, done) {
-        this.push(file);
-
-        // If the task is being watched, the end will never fire to log out from
-        // and the user will never get a "You fixed your errors" confirmation.
-        // So if it's a watch and the file is clean, log out such. The add event
-        // is skipped cause every file throws an add event as watch first sees
-        // it and new files are generally somewhat empty.
-        if (options.watch &&
-          (file.tslint &&
-            file.tslint.failures &&
-            !file.tslint.failures.length) &&
-          file.event !== 'add') {
-          let path = file.path.substr(file.cwd.length);
-
-          log(cSuccess('tslint: ') + cPath(path));
-        }
-        done();
-      }))
-      .pipe(plugins.tslint.report({
-        emitError: true,
-        reportLimit: 0,
-        summarizeFailureOutput: true
-      }));
-  };
-}
-
-/**
  * Lint the server side javascript with jshint.
  */
 function jshint() {
-  return source(config.paths.server.js, {ignoreInitial: options.watch})
+  return source(config.paths.all.js, {ignoreInitial: options.watch})
     .pipe(printVerbose('lint:jshint'))
     .pipe(plugins.jshint())
     .pipe(through.obj(function accumulateFailures(file, enc, done) {
@@ -383,7 +345,7 @@ function buildSass() {
 }
 
 function buildVendor() {
-  return gulp.src(config.paths.vendors, {base: 'node_modules'})
+  return gulp.src(config.paths.vendors)
     .pipe(gulp.dest(config.paths.dist + 'vendor/'));
 }
 
@@ -534,16 +496,16 @@ function runProject() {
 // Linting =====================================================================
 gulp.task('lint',
   'Lint the server with jshint, and the client with tslint.',
-  ['lint:jshint', 'lint:jscs', 'lint:tslint', 'lint:tslint:spec']);
+  ['lint:jshint', 'lint:jscs']);
 
 gulp.task('lint:jshint', jshint);
 gulp.task('lint:jscs', jscs);
-gulp.task('lint:tslint',
-  tslint(config.paths.client.app.source, './tslint.json', 'lint:tslint'));
-gulp.task('lint:tslint:spec',
-  tslint(config.paths.client.app.tests,
-    './tslint.spec.json',
-    'lint:tslint:spec'));
+//gulp.task('lint:tslint',
+  //tslint(config.paths.client.app.source, './tslint.json', 'lint:tslint'));
+//gulp.task('lint:tslint:spec',
+  //tslint(config.paths.client.app.tests,
+    //'./tslint.spec.json',
+    //'lint:tslint:spec'));
 
 // Builing =====================================================================
 gulp.task('build',

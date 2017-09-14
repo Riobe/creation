@@ -1,34 +1,16 @@
 doctype html
+
 head
-  title Tutorial - ng2
+  title Creation
 
-  base(href='/')
-
-  link(rel='stylesheet', href='vendor/primeng/resources/primeng.min.css')
   link(rel='stylesheet', href='css/site.css')
 
-  //- Import any globals that you're going to expose in your angular code
-  //- before you actually import angular, so that when angular goes to
-  //- register it's providers, these things will exist.
-  script(src='vendor/jquery/dist/jquery.min.js')
-  script(src='vendor/zone.js/dist/zone.min.js')
-  script(src='vendor/reflect-metadata/Reflect.js')
-
   if (ENV === 'development')
-    script(src='vendor/rxjs/bundles/Rx.js')
-    script(src='vendor/@angular/core/bundles/core.umd.js')
-    script(src='vendor/@angular/common/bundles/common.umd.js')
-    script(src='vendor/@angular/compiler/bundles/compiler.umd.js')
-    script(src='vendor/@angular/platform-browser/bundles/platform-browser.umd.js')
-    script(src='vendor/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js')
-    script(src='vendor/@angular/http/bundles/http.umd.js')
-    script(src='vendor/@angular/router/bundles/router.umd.js')
-    script(src='vendor/@angular/animations/bundles/animations.umd.js')
-    script(src='vendor/@angular/forms/bundles/forms.umd.js')
+    script(src='vendor/vue.js')
+  else
+    script(src='vendor/vue.min.js')
 
   //- The app bundle is added by webpack.
 body
-  creation
-
-  //- Latest compiled and minified Bootstrap javaScript
-  script(src='vendor/bootstrap-sass/assets/javascripts/bootstrap.min.js')
+  #body
+    h1 Title: {{ title }}

@@ -15,22 +15,20 @@ let config = module.exports = {
 
 config.paths = {
   root: './',
-  dist: './src/client/dist/',
+  dist: './dist/',
   tmp: './.tmp/',
   client: {
     dir: './src/client/',
-    ts: [
-      './src/client/**/*.ts',
-      '!**/*.spec.ts'
+    js: [
+      './src/client/**/*.js',
+      '!**/*.spec.js'
     ],
     static: './src/client/static/',
     sass: './src/client/sass/**/*.scss',
     app: {
       dir: './src/client/app/',
-      ts: './src/client/app/**/*.ts',
-      main: options.prod ?
-      './src/client/app/prod.ts' :
-      './src/client/app/dev.ts',
+      js: './src/client/app/**/*.js',
+      main: './src/client/app/app.js',
       source: [
         '!./src/client/app/**/*.spec.ts',
         './src/client/app/**/*.ts',
@@ -51,24 +49,10 @@ config.paths = {
   },
   source: './src/',
   all: {
-    ts: './src/**/*.ts'
+    js: './src/**/*.js'
   },
   vendors: [
-    './node_modules/jquery/dist/**/*',
-    './node_modules/@angular/animations/bundles/**/*',
-    './node_modules/@angular/common/bundles/**/*',
-    './node_modules/@angular/compiler/bundles/**/*',
-    './node_modules/@angular/core/bundles/**/*',
-    './node_modules/@angular/forms/bundles/**/*',
-    './node_modules/@angular/http/bundles/**/*',
-    './node_modules/@angular/platform-browser/bundles/**/*',
-    './node_modules/@angular/platform-browser-dynamic/bundles/**/*',
-    './node_modules/@angular/router/bundles/**/*',
-    './node_modules/rxjs/**/*',
-    './node_modules/zone.js/dist/**/*',
-    './node_modules/reflect-metadata/**/*',
-    './node_modules/bootstrap-sass/assets/javascripts/**/*',
-    './node_modules/primeng/resources/*.css'
+    './node_modules/vue/dist/vue.js'
   ]
 };
 
@@ -132,17 +116,3 @@ config.helpers = {
     config.options.browserSync.port = newPort + 1;
   }
 };
-
-config.vendors = [
-  '@angular/platform-browser',
-  '@angular/platform-browser-dynamic',
-  '@angular/core',
-  '@angular/common',
-  '@angular/http',
-  '@angular/router',
-  '@angular/forms',
-  '@angular/compiler',
-  'core-js',
-  'zone.js',
-  'rxjs'
-];

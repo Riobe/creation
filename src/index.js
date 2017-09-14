@@ -1,7 +1,7 @@
 'use strict';
 
 const app = require('./setup/express.setup'),
-      log = require('debug')('creation:index');
+      log = require('debug')('jeremypridemore-me:index');
 
 /**
  * Get port from environment and store in Express.

@@ -3,7 +3,7 @@
 const express = require('express'),
       router = express.Router(),
       packageJson = require('../../package.json'),
-      log = require('debug')('creation:api:heartbeat');
+      log = require('debug')('jeremypridemore-me:api:heartbeat');
 
 log('Defining heartbeat routes.');
 router.get('/',  (req, res) => {

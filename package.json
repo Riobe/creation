@@ -1,5 +1,5 @@
 {
-  "name": "creation",
+  "name": "jeremypridemore-me",
   "version": "0.0.2",
   "main": "./src/index.js",
   "private": true,
@@ -8,7 +8,7 @@
     "dev": "gulp dev",
     "help": "gulp help",
     "lint": "gulp lint",
-    "prod": "pm2 start ecosystem.config.js --env production",
+    "prod": "gulp build && pm2 start ecosystem.config.js --env production",
     "prod:build": "gulp build --prod",
     "start": "gulp run",
     "test": "gulp test"

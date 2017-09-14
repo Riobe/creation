@@ -9,7 +9,7 @@ const express = require('express'),
       uuidv1 = require('uuid/v1'),
       chalk = require('chalk'),
       requestLog = require('debug')('creation:request'),
-      log = require('debug')('creation:setup:express');
+      log = require('debug')('jeremypridemore-me:setup:express');
 
 log('Setting up express.');
 let app = express();

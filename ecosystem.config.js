@@ -1,18 +1,18 @@
 module.exports = {
   apps : [
     {
-      name        : 'creation',
+      name        : 'jeremypridemore-me',
       script      : './src/index.js',
       watch       : false,
       env: {
         'NODE_ENV': 'development',
-        'DEBUG': 'creation:*',
-        'PORT': 8080
+        'DEBUG': 'jeremypridemore:*',
+        'PORT': 3000
       },
-      env_production : {
+      'env_production': {
         'NODE_ENV': 'production',
-        'PORT': 80
+        'PORT': 3000
       }
     }
   ]
-}
+};

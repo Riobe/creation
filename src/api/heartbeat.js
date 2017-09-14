@@ -10,7 +10,7 @@ router.get('/',  (req, res) => {
 
   res.json({
     status: 'success',
-    time: new Date(),
+    time: new Date()
   });
   res.end();
 });

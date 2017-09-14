@@ -3,6 +3,6 @@
 new Vue({ 
   el: '#body',
   data: {
-    title: 'Hello Vue!'
+    title: 'Hello Vue!!'
   }
 });

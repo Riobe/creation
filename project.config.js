@@ -49,7 +49,10 @@ config.paths = {
   },
   source: './src/',
   all: {
-    js: './src/**/*.js'
+    js: [
+      '!./node_modules/**/*',
+      './src/**/*.js'
+    ]
   },
   vendors: [
     './node_modules/vue/dist/vue.js'

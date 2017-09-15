@@ -27,12 +27,23 @@ let userConfig = fs.existsSync('./user.config.js'),
     colors = plugins.util.colors;
 
 // Use consistent colors everywhere, so pull out the ones we want.
-let cWarning = colors.bold.yellow,
+const cWarning = colors.bold.yellow,
     cVerbose = colors.yellow,
     cSuccess = colors.green,
     cTask = colors.blue,
     cPath = colors.magenta,
-    cValue = colors.cyan;
+    cValue = colors.cyan,
+    cGulpDebug = colors.inverse.white;
+
+const gLog = function() {
+  let newArgs = Array.from(arguments).map(arg => {
+    return cGulpDebug(typeof arg === 'object' ?
+      inspect(arg) :
+      arg
+    );
+  });
+  console.log.apply(console, newArgs);
+};
 
 // =============================================================================
 // Option parsing
@@ -46,6 +57,7 @@ let possibleOptions = {
   'test': Boolean, // Controls testing in non-lint tasks.
   'verbose': Boolean, // To watch any task that supports it.
   'watch': Boolean, // To watch any task that supports it.
+  'gulpdebug': Boolean // To debug this gulpfile itself.
 };
 
 let shorthandOptions = {
@@ -87,6 +99,11 @@ if (task === 'run') {
 }
 
 webpackConfig.watch = options.watch;
+
+if (options.gulpdebug) {
+  gLog('Gulp debugging turned on for task:', task);
+  gLog('Gulp called with the following options:', options);
+}
 
 // =============================================================================
 // Utility functions.
@@ -301,7 +318,7 @@ function buildWebpack(done) {
   let callback = complete => {
     return (err, stats) => {
       log(stats.toString(webpackConfig.stats));
-      if (options.open) { initBrowserSync(); }
+      if (options.run) { initBrowserSync(); }
       if (complete) { complete(); }
     };
   };
@@ -465,6 +482,10 @@ function runBrowserTests(done) {
  * client. Only intended to be used in development.
  */
 function runProject() {
+  if (options.gulpdebug) {
+    gLog('Running the project.');
+  }
+
   if (options.prod) {
     // Still allow this so that devs can test that things work when AOT built,
     // but warn that this is not acceptable in production.
@@ -534,6 +555,10 @@ if (options.build) {
   runDependencies.push('build');
 }
 
+if (options.gulpdebug && options.run) {
+  gLog('runDependencies:', runDependencies);
+}
+
 gulp.task('run',
   'Runs the program using nodemon/browser-sync for auto-reloading.',
   runDependencies,
@@ -555,6 +580,10 @@ if (options.test) { defaultDependencies.push('test'); }
 if (options.lint) { defaultDependencies.push('lint'); }
 
 if (!defaultDependencies.length) { defaultDependencies.push('help'); }
+
+if (options.gulpdebug && ['default', 'dev'].includes(task)) {
+  gLog('defaultDependencies:', defaultDependencies);
+}
 
 gulp.task('default',
   'Run, build, test and lint the project with the watch & verbose flags.',

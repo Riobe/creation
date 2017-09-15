@@ -33,9 +33,12 @@ config.entry = {
  */
 config.output = {
   path: path.resolve('./dist/js'),
-  filename: '[name].[chunkhash].bundle.js',
   publicPath: 'js/'
 };
+
+config.output.filename = options.prod ?
+  '[name].[chunkhash].bundle.js' :
+  '[name].bundle.js';
 
 /**
  * devtool: Technique for creating sourcemaps.

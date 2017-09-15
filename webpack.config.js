@@ -146,16 +146,6 @@ rules.push({
 config.externals = {};
 
 /**
- * externals: Object
- * Do not follow/bundle these values when imported/required. Instead, use the
- * mapping and assume there will be an object in the global space with the
- * value's name.
- *
- * This stops us from bundling our dependencies into our own code.
- */
-config.externals = {};
-
-/**
  * plugins: [Object]
  * Plugins to modify the behavior of webpack.
  */

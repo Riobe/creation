@@ -40,14 +40,7 @@ config.output = {
 /**
  * devtool: Technique for creating sourcemaps.
  */
-config.devtool = options.prod ?
-  // Source map version that only maps errors and doesn't expose the map to the browser dev tools
-  'hidden-source-map' :
-  // This version creates the source map as a separate file
-  'source-map';
-
-// Use this version to have the source map as inline comment with the map in DataUrl
-// config.devtool = 'inline-source-map';
+config.devtool = 'source-map'; // This version creates the source map as a separate file
 
 /**
  * stats: string|object
@@ -72,7 +65,7 @@ config.stats = {
 config.resolve = {
   // We're using webpack to bundle our client code, which is typescript, so
   // start with the ts extension.
-  extensions: ['.ts', '.js']
+  extensions: ['.js']
 };
 
 /**
@@ -157,20 +150,7 @@ config.externals = {};
  *
  * This stops us from bundling our dependencies into our own code.
  */
-config.externals = options.prod ?
-  {} :
-  {
-    '@angular/core': 'ng.core',
-    '@angular/common': 'ng.common',
-    '@angular/compiler': 'ng.compiler',
-    '@angular/platform-browser': 'ng.platformBrowser',
-    '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
-    '@angular/forms': 'ng.forms',
-    '@angular/http': 'ng.http',
-    '@angular/router': 'ng.router',
-    'zone': 'Zone',
-    'rxjs': 'Rx'
-  };
+config.externals = {};
 
 /**
  * plugins: [Object]

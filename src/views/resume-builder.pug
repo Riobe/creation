@@ -1,0 +1,51 @@
+extends layout
+
+block content
+    
+    div.container
+        h1 Resume Builder
+        p.lead
+            | This experiment is to create a single resume blurb. Insert the information for a job and it will be presented, in what is hopefully a pleasing manner, to you. Some of the details will be present only upon clicking.
+
+        form.container(role='form')
+            div.form-group.col-sm-8.col-xs-12
+                label.sr-only(for='company-name') Company name
+                input#company-name.form-control(type='text' placeholder='Enter company name')
+                
+            div.form-group.col-sm-4.col-xs-12
+                label.sr-only(for='company-link') Company Link (Optional)
+                input#company-link.form-control(type='url' placeholder='Company Link (Optional)')
+
+            div.form-group.col-sm-12
+                label.sr-only(for='company-location') Company Location (Optional)
+                input#company-location.form-control(type='text' placeholder='Company Location (Optional)')
+
+            div.form-group.col-sm-6.col-xs-12
+                label.sr-only(for='start-date') Start Date
+                input#start-date.form-control(type='text'
+                        placeholder='Start Date'
+                        onmouseover='this.type="date"'
+                        onmouseout='if (this != document.activeElement) { this.type="text"; }'
+                        onfocus='this.onmouseover()'
+                        onblur='var me = this; setTimeout(function(){me.onmouseout();},50)')
+
+            div.form-group.col-sm-6.col-xs-12
+                label.sr-only(for='end-date') End Date
+                input#end-date.form-control(type='text'
+                        placeholder='End Date'
+                        onmouseover='this.type="date"'
+                        onmouseout='if (this != document.activeElement) { this.type="text"; }'
+                        onfocus='this.onmouseover()'
+                        onblur='var me = this; setTimeout(function(){me.onmouseout();},50)')
+                
+                div.checkbox
+                    label 
+                        input(type='checkbox') 
+                        | Currently working here
+                
+            div.form-group.col-sm-12
+                label.sr-only(for='description') Description (Optional)
+                // Sounds good... 
+                textarea#description.form-control(rows=8 placeholder='Description (Optional)') 
+
+        

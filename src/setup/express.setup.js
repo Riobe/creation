@@ -44,8 +44,7 @@ app.use((req, res, next) => {
 // =============================================================================
 
 // Up and out of src directory and into dist.
-app.use(express.static(path.join(__dirname, '..', '..', 'dist')));
-app.use(express.static(path.resolve('../../dist')));
+app.use(express.static(path.resolve('./dist')));
 
 // =============================================================================
 // API routes

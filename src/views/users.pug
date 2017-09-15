@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    h1 Users
+    if locals.users.length
+        ul
+            each user, i in users
+                li= i + ') ' + user.name + ' (' + user.email + ') Age: ' + user.age
+    else
+        p No users yet.
+
+    h1 New User
+    form(method="POST", action="/users")
+      p Name
+          input(type="text", name="name")
+      p Email
+          input(type="email", name="email")
+      p Age
+          input(type="number", name="age")
+      p
+          input(type="submit")

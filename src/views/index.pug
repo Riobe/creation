@@ -1,16 +1,22 @@
 doctype html
 
 head
-  title Creation
+  title Jeremy Pridemore - Functional Madness
 
-  link(rel='stylesheet', href='css/site.css')
+  meta(name="viewport" content="width=device-width, initital-scale=1.0")
 
-  if (ENV === 'development')
-    script(src='vendor/vue.js')
-  else
-    script(src='vendor/vue.min.js')
+  link(rel="stylesheet" href="css/site.css")
 
-  //- The app bundle is added by webpack.
+  block stylesheets
+
 body
+  nav#navbar
+    #page-title Jeremy Pridemore
+    img#github-logo(src="images/GitHub-Mark-Light-32px.png")
+
+  h1 Again
   #body
-    h1 Title: {{ title }}
+    h1 Welcome
+    h1 {{ title }}
+
+  script(src="https://unpkg.com/vue@2.4.4/dist/vue.js")

@@ -1,5 +1,24 @@
 @import "./imports/common";
 
 body {
+  margin: 0;
+
   background-color: $creation-color-bg-primary;
+}
+
+#navbar {
+  min-height: 50px;
+  margin-bottom: 20px;
+  padding: 10px;
+
+  display: flex;
+  justify-content: space-around;
+
+  color: white;
+  background-color: $color-nav-background;
+}
+
+#github-logo {
+  height: 32px;
+  width: 32px;
 }

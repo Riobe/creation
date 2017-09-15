@@ -30,7 +30,7 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('spoaifnsdopfinasoin Secret COOKIE Phrase!!! 2890347nasS*DFJ)(*YWSHDF'));
 app.use((req, res, next) => {
   req.id =  uuidv1();
   req.log = function(message) {

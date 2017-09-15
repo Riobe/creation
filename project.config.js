@@ -78,7 +78,7 @@ config.options = {
     files: [
       config.paths.dist + 'js/**/*.js',
       config.paths.dist + 'css/**/*.css',
-      config.paths.server.pug
+      config.paths.dist + '**/*.html'
     ],
     ghostMode: {
       clicks: true,

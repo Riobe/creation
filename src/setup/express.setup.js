@@ -4,16 +4,22 @@ const express = require('express'),
       path = require('path'),
       //favicon = require('serve-favicon'),
       logger = require('morgan'),
-      cookieParser = require('cookie-parser'),
       bodyParser = require('body-parser'),
+      session = require('express-session'),
+      MongoStore = require('connect-mongo')(session),
       uuidv1 = require('uuid/v1'),
       chalk = require('chalk'),
       inspect = require('util').inspect,
       db = require('./mongoose.setup'),
+      passport = require('passport'),
       requestLog = require('debug')('jeremypridemore-me:request'),
       log = require('debug')('jeremypridemore-me:setup:express');
 
 log('Setting up express.');
+const cookieSecret = process.env.COOKIE_SECRET ||
+  'spoaifnsdopfinasoin Secret COOKIE Phrase!!! 2890347nasS*DFJ)(*YWSHDF';
+
+log(`Using cookie secret of: ${cookieSecret}`);
 let app = express();
 
 // =============================================================================
@@ -30,9 +36,22 @@ app.set('view engine', 'pug');
 // uncomment after placing your favicon in ./src/client/static/images
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser('spoaifnsdopfinasoin Secret COOKIE Phrase!!! 2890347nasS*DFJ)(*YWSHDF'));
+
+app.use(session({
+  secret: cookieSecret,
+  cookie: {
+    maxAge: 1000 * 60 * 60 // 1 hour
+  },
+  store: new MongoStore({
+    mongooseConnection: db
+  }),
+  resave: true,
+  saveUninitialized: true
+}));
+
 app.use((req, res, next) => {
   req.id =  uuidv1();
   req.log = function(message) {
@@ -51,6 +70,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 // =============================================================================
 // Static routes
 // =============================================================================
@@ -63,6 +85,7 @@ app.use(express.static(path.resolve('./dist')));
 // =============================================================================
 app.use('/api/heartbeat', require('../api/heartbeat'));
 app.use('/api/users', require('../api/users'));
+app.use('/api/login', require('../api/login'));
 
 // =============================================================================
 // Web catch-all route

@@ -2,8 +2,9 @@
 
 require('./setup/mongoose.setup');
 
-const app = require('./setup/express.setup'),
-      db = require('./setup/mongoose.setup'),
+const db = require('./setup/mongoose.setup'),
+      passport = require('./setup/passport.setup'),
+      app = require('./setup/express.setup'),
       log = require('debug')('jeremypridemore-me:index');
 
 /**

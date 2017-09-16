@@ -6,7 +6,7 @@ const express = require('express'),
       log = require('debug')('jeremypridemore-me:api:users');
 
 log('Defining user routes.');
-router.post('/',  (req, res) => {
+router.post('/', (req, res) => {
   req.log('Saving new user.');
   const newUser = new User(req.body);
 

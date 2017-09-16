@@ -67,7 +67,7 @@ config.options = {
     env: {
       PORT: config.options.port,
       NODE_ENV: 'dev',
-      DEBUG: 'creation:*'
+      DEBUG: 'jeremypridemore-me:*'
     },
     watch: [config.paths.server.dir],
     ignore: [config.paths.client.dir]

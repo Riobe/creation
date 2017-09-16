@@ -50,6 +50,7 @@ app.use(express.static(path.resolve('./dist')));
 // API routes
 // =============================================================================
 app.use('/api/heartbeat', require('../api/heartbeat'));
+app.use('/api/users', require('../api/users'));
 
 // =============================================================================
 // Web catch-all route

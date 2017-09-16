@@ -1,6 +1,9 @@
 'use strict';
 
+require('./setup/mongoose.setup');
+
 const app = require('./setup/express.setup'),
+      db = require('./setup/mongoose.setup'),
       log = require('debug')('jeremypridemore-me:index');
 
 /**
@@ -9,11 +12,14 @@ const app = require('./setup/express.setup'),
 const port = process.env.PORT || 3000;
 app.set('port', Number(port));
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-app.listen(port, function onListening() {
-  log('Listening on ' + port);
+db.on('error', console.error.bind(console, 'mongodb error:'));
+db.once('open', () => {
+  log('Connection to MongoDB successful.');
+
+  // Listen on provided port, on all network interfaces.
+  app.listen(port, function onListening() {
+    log('Listening on ' + port);
+  });
 });
 
 /**

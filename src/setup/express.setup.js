@@ -8,6 +8,7 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       uuidv1 = require('uuid/v1'),
       chalk = require('chalk'),
+      inspect = require('util').inspect,
       requestLog = require('debug')('jeremypridemore-me:request'),
       log = require('debug')('jeremypridemore-me:setup:express');
 
@@ -34,6 +35,10 @@ app.use(cookieParser('spoaifnsdopfinasoin Secret COOKIE Phrase!!! 2890347nasS*DF
 app.use((req, res, next) => {
   req.id =  uuidv1();
   req.log = function(message) {
+    if (typeof message === 'object') {
+      message = inspect(message, { depth: 5 });
+    }
+
     requestLog(`${new Date()} - ${req.id} - ${message}`);
   };
 

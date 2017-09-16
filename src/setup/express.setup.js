@@ -8,7 +8,7 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       uuidv1 = require('uuid/v1'),
       chalk = require('chalk'),
-      requestLog = require('debug')('creation:request'),
+      requestLog = require('debug')('jeremypridemore-me:request'),
       log = require('debug')('jeremypridemore-me:setup:express');
 
 log('Setting up express.');
@@ -36,6 +36,7 @@ app.use((req, res, next) => {
   req.log = function(message) {
     requestLog(`${new Date()} - ${req.id} - ${message}`);
   };
+
   next();
 });
 

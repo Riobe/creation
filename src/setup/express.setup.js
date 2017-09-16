@@ -49,6 +49,7 @@ app.use(session({
     mongooseConnection: db
   }),
   resave: true,
+  rolling: true,
   saveUninitialized: true
 }));
 

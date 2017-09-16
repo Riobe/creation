@@ -41,8 +41,14 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  User.find({userName: id}, (err, user) => {
-    done(err, user);
+  log(`Deserializing user: ${id}`);
+  User.findOne({userName: id}, (err, user) => {
+    if (err) {
+      log(`ERROR: ${err}`);
+      done(err);
+    }
+
+    done(null, user);
   });
 });
 

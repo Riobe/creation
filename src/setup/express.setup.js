@@ -9,6 +9,7 @@ const express = require('express'),
       uuidv1 = require('uuid/v1'),
       chalk = require('chalk'),
       inspect = require('util').inspect,
+      db = require('./mongoose.setup'),
       requestLog = require('debug')('jeremypridemore-me:request'),
       log = require('debug')('jeremypridemore-me:setup:express');
 
@@ -42,6 +43,11 @@ app.use((req, res, next) => {
     requestLog(`${new Date()} - ${req.id} - ${message}`);
   };
 
+  next();
+});
+
+app.use((req, res, next) => {
+  req.db = db;
   next();
 });
 

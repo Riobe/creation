@@ -428,7 +428,17 @@ function deleteVendor(done) {
 // Testing =====================================================================
 
 /**
- * Runs the browsers tests on our Angular 2 code using karma.
+ * Runs server tests.
+ *
+ * @param {function} done - Gulp callback to indicate task completion.
+ */
+function runServerTests() {
+  return source(config.paths.server.tests, {read: false})
+    .pipe(plugins.mocha());
+}
+
+/**
+ * Runs the browsers tests on our vue code using karma.
  *
  * @param {function} done - Gulp callback to indicate task completion.
  */
@@ -547,7 +557,9 @@ gulp.task('clean:index', deleteIndex);
 gulp.task('clean:vendor', deleteVendor);
 
 // Testing =====================================================================
-gulp.task('test', 'Runs the project\'s unit tests.', runBrowserTests);
+gulp.task('test:server', 'Runs the project\'s unit tests.', runServerTests);
+gulp.task('test:client', 'Runs the project\'s unit tests.', runBrowserTests);
+gulp.task('test', 'Runs the project\'s unit tests.', ['test:server']);
 
 // Running =====================================================================
 let runDependencies = ['run:nodemon'];

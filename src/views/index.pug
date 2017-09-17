@@ -1,21 +1,10 @@
-doctype html
+extends layout
 
-head
-  title Jeremy Pridemore - Functional Madness
+block stylesheets
+  link(rel='stylesheet' href='css/site.css')
 
-  meta(name="viewport" content="width=device-width")
-
-  link(rel="stylesheet" href="css/site.css")
-
-  block stylesheets
-
-body
-  nav#navbar
-    #page-title Jeremy Pridemore
-    img#github-logo(src="images/GitHub-Mark-Light-32px.png")
-
+block content
   #body
-    h1 Welcome
-    h1 {{ title }}
 
+block scripts
   script(src="https://unpkg.com/vue@2.4.4/dist/vue.js")

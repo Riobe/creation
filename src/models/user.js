@@ -96,12 +96,4 @@ userSchema.methods.isPassword = function(password) {
   return hash(password, this.salt) === this.password;
 };
 
-const User = mongoose.model('User', userSchema);
-
-const riobe = new User({
-  email: 'jeremy.pridemore@gmail.com'
-});
-
-log('Validate email:', riobe.validateEmail());
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

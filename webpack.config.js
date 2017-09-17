@@ -68,7 +68,10 @@ config.stats = {
 config.resolve = {
   // We're using webpack to bundle our client code, which is typescript, so
   // start with the ts extension.
-  extensions: ['.js']
+  extensions: ['.js'],
+  alias: {
+    vue: 'vue/dist/vue.esm.js'
+  }
 };
 
 /**
@@ -82,19 +85,14 @@ if (options.prod) {
   // Strip console logging for production.
   rules.push({
     test: /\.js$/,
-    loader: strip.loader('console.log', 'console.error')
+    loader: strip.loader('console.log', 'console.error'),
+    exclude: /(node_modules|spec\.js)/
   });
 } 
 
-// Handle SASS transpiling
-rules.push({
-  test: /\.scss$/,
-  use: [ 'raw-loader', 'sass-loader' ]
-});
-
 // Handle pug transpiling
 rules.push({
-  test: /\.pug$/,
+  test: /index\.pug$/,
   loaders: [
     {
       loader: 'apply-loader',
@@ -114,14 +112,24 @@ rules.push({
   ]
 });
 
-// Embed files
 rules.push({
-  test: /\.html$/,
+  test: /\.js$/,
+  loader: 'babel-loader',
+  exclude: /node_modules/,
+  options: {
+    presets: ['env']
+  }
+});
+
+rules.push({
+  test: /\.vue$/,
   use: [
     {
-      loader: 'html-loader',
+      loader: 'vue-loader',
       options: {
-        minimize: false
+        loaders: {
+          scss: 'vue-style-loader!css-loader!sass-loader'
+        }
       }
     }
   ]
@@ -153,7 +161,7 @@ let plugins = config.plugins = [];
 
 plugins.push(new webpack.optimize.UglifyJsPlugin({
   sourceMap: true,
-  compress: { warnings: true }
+  compress: { warnings: false }
 }));
 
 plugins.push(new HtmlWebpackPlugin({

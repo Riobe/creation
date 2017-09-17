@@ -21,7 +21,6 @@ config.paths = {
     dir: './src/client/',
     js: [
       './src/client/**/*.js',
-      '!**/*.spec.js'
     ],
     static: './src/client/static/',
     sass: './src/client/sass/**/*.scss',
@@ -30,8 +29,8 @@ config.paths = {
       js: './src/client/app/**/*.js',
       main: './src/client/app/app.js',
       source: [
-        '!./src/client/app/**/*.spec.ts',
-        './src/client/app/**/*.ts',
+        '!./src/client/app/**/*.spec.js',
+        './src/client/app/**/*.js',
       ],
       tests: './src/client/app/**/*.spec.ts',
       template: './src/views/index.pug',
@@ -45,7 +44,11 @@ config.paths = {
       './src/**/*.js',
       '!./src/client/**/*'
     ],
-    pug: './src/views/**/*.pug'
+    pug: './src/views/**/*.pug',
+    tests: [
+      './src/**/*.spec.js',
+      '!./src/client/**/*.spec.js'
+    ]
   },
   source: './src/',
   all: {

@@ -1,0 +1,25 @@
+@import '../../sass/imports/common';
+
+#site {
+  height: 100%;
+  width: 100%;
+
+  padding-top: $height-site-navbar + 10px;;
+}
+
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  height: $height-site-navbar;
+  width: 100%;
+
+  padding: 10px;
+
+  display: flex;
+  justify-content: space-around;
+
+  color: white;
+  background-color: $color-nav-background;
+}

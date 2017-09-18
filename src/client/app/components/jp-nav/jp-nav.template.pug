@@ -6,13 +6,13 @@ nav#navbar
     a#login(@click="loggingIn = true") login
     jp-modal(v-if="loggingIn", @close="loggingIn = false")
       .header(slot="title") Login
-      form#login-form(slot="content", @click.stop, @submit.prevent)
+      form#login-form(slot="content", @click.stop, @submit.prevent="login")
         .form-group
           label(for="user-name-login") User Name:
-          input#user-name-login(type="text", placeholder="Enter a user name")
+          input#user-name-login(type="text", placeholder="Enter a user name", v-model="loginForm.userName")
         .form-group
           label(for="password-login") Password:
-          input#password-login(type="password")
+          input#password-login(type="password", v-model="loginForm.password")
         .form-group
           input(type="submit")
     .vertical-seperator

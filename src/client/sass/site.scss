@@ -1,12 +1,21 @@
 @import "./imports/common";
 
 body {
-  margin: 0;
+  width: 95vw;
+  height: 90vh;
 
-  background-color: $creation-color-bg-primary;
+  margin: 0;
+  padding: 0;
+
+  color: $color-font;
+  background-color: $color-body-background;
 }
 
 #github-logo {
   height: 32px;
   width: 32px;
+}
+
+a:hover {
+  text-decoration: underline $color-font;
 }

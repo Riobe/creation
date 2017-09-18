@@ -5,14 +5,34 @@
   top: 0;
   left: 0;
 
+  box-sizing: border-box;
   height: $height-site-navbar;
   width: 100%;
 
-  padding: 10px;
+  padding: 5px 15px;
 
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
 
   color: white;
   background-color: $color-nav-background;
+}
+
+#not-logged-in {
+  height: 100%;
+  width: 100px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vertical-seperator {
+  height: 80%;
+  width: 2px;
+
+  border-radius: 15px;
+
+  background-color: white;
 }

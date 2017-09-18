@@ -2,7 +2,7 @@
 
 const debug = require('debug')('jeremypridemore-me:app');
 
-import jpSite from './jp-site/jp-site.vue';
+import jpSite from './components/jp-site/jp-site.vue';
 import Vue from 'vue';
 
 debug('Instantiating Vue.js');

@@ -1,0 +1,33 @@
+doctype html
+
+nav#navbar
+  #page-title Jeremy Pridemore
+  #not-logged-in
+    a#login(@click="loggingIn = true") login
+    jp-modal(v-if="loggingIn", @close="loggingIn = false")
+      .header(slot="title") Login
+      form#login-form(slot="content", @click.stop, @submit.prevent)
+        .form-group
+          label(for="user-name-login") User Name:
+          input#user-name-login(type="text", placeholder="Enter a user name")
+        .form-group
+          label(for="password-login") Password:
+          input#password-login(type="password")
+        .form-group
+          input(type="submit")
+    .vertical-seperator
+    a#register(@click="registering = true") register
+    jp-modal(v-if="registering", @close="registering = false")
+      .header(slot="title") Register
+      form#register-form(slot="content", @click.stop, @submit.prevent)
+        .form-group
+          label(for="user-name-register") User Name:
+          input#user-name-register(type="text", placeholder="Enter a user name")
+        .form-group
+          label(for="password-register") Password:
+          input#password-register(type="password")
+        .form-group
+          label(for="email-register") Email:
+          input#email-register(type="email")
+        .form-group
+          input(type="submit")

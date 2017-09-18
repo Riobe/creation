@@ -1,4 +1,4 @@
-@import '../../sass/imports/common';
+@import '../../../sass/imports/common';
 
 #navbar {
   position: fixed;
@@ -35,4 +35,8 @@
   border-radius: 15px;
 
   background-color: white;
+}
+
+#login-form, #register-form {
+  padding: 20px;
 }

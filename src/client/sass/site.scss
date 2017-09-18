@@ -23,3 +23,18 @@ a {
 a:hover {
   text-decoration: underline $color-font;
 }
+
+.form-group {
+  display: flex;
+  justify-content: center;
+  text-align: left;
+
+  label {
+    width: 30%;
+    margin-right: 10px;
+  }
+
+  input {
+    flex: 1;
+  }
+}

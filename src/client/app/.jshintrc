@@ -1,6 +1,7 @@
 {
   "extends": "../../../.jshintrc",
   "globals": {
-    "Vue": true
+    "Vue": true,
+    "window": true
   }
 }

@@ -1,0 +1,10 @@
+doctype html
+
+transition(name="modal")
+  .modal-mask(@click="close()")
+    .modal(@click.stop)
+      .modal-title
+        slot(name="title")
+        i.fa.fa-close(@click="close()")
+      .modal-body
+        slot(name="content")

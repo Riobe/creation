@@ -114,11 +114,8 @@ rules.push({
 
 rules.push({
   test: /\.js$/,
-  loader: 'babel-loader',
   exclude: /node_modules/,
-  options: {
-    presets: ['env']
-  }
+  loader: 'babel-loader'
 });
 
 rules.push({
@@ -135,13 +132,13 @@ rules.push({
   ]
 });
 
-// Create source maps
-rules.push({
-  // All output js files will have sourcemaps re-processed by source-map-loader
-  enforce: 'pre',
-  test: /\.js$/,
-  loader: 'source-map-loader'
-});
+//// Create source maps
+//rules.push({
+  //// All output js files will have sourcemaps re-processed by source-map-loader
+  //enforce: 'pre',
+  //test: /\.js$/,
+  //loader: 'source-map-loader'
+//});
 
 /**
  * externals: Object

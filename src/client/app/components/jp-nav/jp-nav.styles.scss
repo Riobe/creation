@@ -25,10 +25,10 @@
 
 #not-logged-in, #logged-in {
   height: 100%;
-  width: 100px;
+  width: 250px;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -36,6 +36,7 @@
   height: 80%;
   width: 2px;
 
+  margin: 0 7px;
   border-radius: 15px;
 
   background-color: white;

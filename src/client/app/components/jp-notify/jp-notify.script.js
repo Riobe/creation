@@ -17,12 +17,11 @@ export default {
   },
   methods: {
     receivedNotification: function(notification) {
-      notification.id = Math.random();
       this.notifications.push(notification);
+
       setTimeout(() => {
-        const index = this.notifications.indexOf(item => item.id === notification.id);
-        this.notifications.splice(index, 1);
-      }, 2000);
+        this.notifications.shift();
+      }, 3000);
     }
   },
   created: function() {

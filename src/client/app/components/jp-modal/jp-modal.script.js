@@ -2,6 +2,7 @@
 
 const debug = require('debug')('jeremypridemore-me:components:jp-modal');
 
+debug('Exporting jp-nav component.');
 export default {
   methods: {
     close: function() {

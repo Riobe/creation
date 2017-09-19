@@ -32,6 +32,10 @@ function publish(to, event) {
   channels[to].forEach(handler => handler(event));
 }
 
+function channel(name) {
+  return publish.bind(undefined, name);
+}
+
 function clear(channel) {
   return delete channels[channel];
 }
@@ -41,5 +45,6 @@ module.exports = {
   subscribe,
   unsubscribe,
   publish,
+  channel,
   clear
 };

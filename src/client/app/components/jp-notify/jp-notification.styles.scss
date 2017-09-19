@@ -2,10 +2,10 @@
 
 .notification {
   height: $height-site-navbar;
+  text-align: center;
 
   > .title {
     font-weight: bold;
-    text-align: center;
     color: $color-font;
   }
 }

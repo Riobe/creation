@@ -1,6 +1,8 @@
 #notify {
   position: fixed;
   top: 10px;
-  left: calc(50% - (180px/2));
-  z-index: 9000;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  z-index: 6000;
 }

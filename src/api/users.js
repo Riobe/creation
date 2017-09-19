@@ -19,19 +19,19 @@ router.post('/', (req, res) => {
     });
   };
 
-  let error = newUser.validateUserName();
+  let error = User.validateUserName(newUser.userName);
   if (error) {
     req.log(`Cannot create user due to bad user name of ${newUser.userName}.`);
     return sendValidationErrorOf(error);
   }
 
-  error = newUser.validateEmail();
+  error = User.validateEmail(newUser.email);
   if (error) {
     req.log(`Cannot create user due to bad email of ${newUser.email}.`);
     return sendValidationErrorOf(error);
   }
 
-  error = newUser.validatePassword();
+  error = User.validatePassword(newUser.password, newUser.userName, newUser.email);
   if (error) {
     req.log('Cannot create user due to bad password.');
     return sendValidationErrorOf(error);

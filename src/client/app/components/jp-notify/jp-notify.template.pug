@@ -1,7 +1,2 @@
 #notify
-  jp-notification(
-    v-for='(notification, index) in notifications',
-    :notification="notification",
-    :index="index",
-    @done="removeFirst"
-  )
+  jp-notification(v-for='(notification, index) in notifications', :notification="notification")

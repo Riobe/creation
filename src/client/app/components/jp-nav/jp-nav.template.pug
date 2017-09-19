@@ -19,15 +19,15 @@ nav#navbar
     a#register(@click="registering = true") register
     jp-modal(v-if="registering", @close="registering = false")
       .header(slot="title") Register
-      form#register-form(slot="content", @click.stop, @submit.prevent)
+      form#register-form(slot="content", @click.stop, @submit.prevent="register")
         .form-group
           label(for="user-name-register") User Name:
-          input#user-name-register(type="text", placeholder="Enter a user name")
+          input#user-name-register(type="text", placeholder="Enter a user name", v-model="registerForm.userName")
         .form-group
           label(for="password-register") Password:
-          input#password-register(type="password")
+          input#password-register(type="password", v-model="registerForm.password")
         .form-group
           label(for="email-register") Email:
-          input#email-register(type="email")
+          input#email-register(type="email", v-model="registerForm.email")
         .form-group
           input(type="submit")

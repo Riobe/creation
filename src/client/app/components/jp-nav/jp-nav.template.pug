@@ -2,7 +2,7 @@ doctype html
 
 nav#navbar
   #page-title Jeremy Pridemore
-  #not-logged-in
+  #not-logged-in(v-if="!user")
     a#login(@click="loggingIn = true") login
     jp-modal(v-if="loggingIn", @close="loggingIn = false")
       .header(slot="title") Login
@@ -31,3 +31,7 @@ nav#navbar
           input#email-register(type="email", v-model="registerForm.email")
         .form-group
           input(type="submit")
+  #logged-in(v-else)
+    .header {{ user.userName }}
+    .vertical-seperator
+    .header logout

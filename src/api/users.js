@@ -3,7 +3,6 @@
 const express = require('express'),
       router = express.Router(),
       User = require('../models/user'),
-      requireLogin = require('../utility/require-login'),
       log = require('debug')('jeremypridemore-me:api:users');
 
 log('Defining user routes.');
@@ -61,17 +60,6 @@ router.post('/', (req, res) => {
         status: 'error',
         message: 'User could not be saved.'
       });
-    });
-});
-
-router.get('/:userName',
-  requireLogin,
-  (req, res) => {
-    res.json({
-      status: 'success',
-      user: {
-        userName: 'riobe'
-      }
     });
 });
 

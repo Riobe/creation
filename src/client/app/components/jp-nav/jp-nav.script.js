@@ -39,7 +39,7 @@ export default {
       },
       loggingIn: true,
       registering: false,
-      user: undefined
+      user: userService.current
     };
   },
   methods: {

@@ -14,5 +14,6 @@ function register(user) {
 
 debug('Exporting users service.');
 module.exports = {
+  current: undefined,
   register
 };

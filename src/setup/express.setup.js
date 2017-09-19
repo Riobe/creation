@@ -87,6 +87,7 @@ app.use(express.static(path.resolve('./dist')));
 app.use('/api/heartbeat', require('../api/heartbeat'));
 app.use('/api/users', require('../api/users'));
 app.use('/api/login', require('../api/login'));
+app.use('/api/logout', require('../api/logout'));
 
 // =============================================================================
 // Web catch-all route

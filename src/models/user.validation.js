@@ -7,7 +7,6 @@ const emailRegex = /(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{
 // jscs:enable maximumLineLength
 
 exports.validateUserName = function(userName) {
-  console.log('Validating ' + userName);
   if (!userName) {
     return 'You forgot the user name.';
   }
@@ -58,6 +57,11 @@ exports.validatePassword = function(password, userName, email) {
   let numberCount = password.match(/\d*/);
   if (numberCount && (numberCount[0].length === password.length)) {
     return 'Very clever, password can\'t be all numbers.';
+  }
+
+  // From the client we also need to be able to just validate without the email.
+  if (!email) {
+    return;
   }
 
   const emailAccount = email.match(/[^@]+/)[0],

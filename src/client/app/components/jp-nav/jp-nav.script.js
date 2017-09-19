@@ -6,6 +6,23 @@ const debug = require('debug')('jeremypridemore-me:components:jp-nav');
 const userValidation = require('../../../../models/user.validation');
 const notify = require('../../services/notify.service').channel('notify');
 const userService = require('../../services/users.service');
+const loginService = require('../../services/login.service');
+
+const notifySuccess = message => {
+  notify({
+    classes: 'success',
+    title: 'Success',
+    message
+  });
+};
+
+const notifyError = message => {
+  notify({
+    classes: 'error',
+    title: 'Error',
+    message
+  });
+};
 
 debug('Exporting jp-nav component.');
 export default {
@@ -20,66 +37,67 @@ export default {
         userName: undefined,
         password: undefined
       },
-      loggingIn: false,
-      registering: true,
+      loggingIn: true,
+      registering: false,
       user: undefined
     };
   },
   methods: {
-    login: function() {
-      this.user = {
-        userName: this.loginForm.userName
-      };
-      notify({
-        classes: 'success',
-        title: 'Success',
-        message: `You are logged in as ${this.user.userName}!`
-      });
-    },
     register: function() {
       let error = userValidation.validateUserName(this.registerForm.userName);
       if (error) {
-        return notify({
-          classes: 'error',
-          title: 'Error',
-          message: error
-        });
+        return notifyError(error);
       }
 
       error = userValidation.validateEmail(this.registerForm.email);
       if (error) {
-        return notify({
-          classes: 'error',
-          title: 'Error',
-          message: error
-        });
+        return notifyError(error);
       }
 
       error = userValidation.validatePassword(this.registerForm.password, this.registerForm.userName, this.registerForm.email);
       if (error) {
-        return notify({
-          classes: 'error',
-          title: 'Error',
-          message: error
-        });
+        return notifyError(error);
       }
 
       userService.register(this.registerForm)
-        .then(response => {
-          notify({
-            classes: 'success',
-            title: 'Success',
-            message: `Created ${this.registerForm.userName}!`
-          });
-          debug(response.data);
+        .then(res => {
+          notifySuccess(`Created ${this.registerForm.userName}!`);
+          debug(res.data);
+
+          this.registerForm = {
+            userName: undefined,
+            password: undefined,
+            email: undefined
+          };
+
           this.registering = false;
         })
         .catch(err => {
-          notify({
-            classes: 'error',
-            title: 'Error',
-            message: `Well shit, something went wrong making ${this.registerForm.userName}.`
-          });
+          notifyError(`Well shit, something went wrong making ${this.registerForm.userName}.`);
+          debug(err);
+        });
+    },
+    login: function() {
+      debug(this.loginForm);
+      if (userValidation.validatePassword(this.loginForm.password, this.loginForm.userName)) {
+        notifyError('Nope, not a valid password. Try again.');
+        return;
+      }
+
+      loginService.login(this.loginForm.userName, this.loginForm.password)
+        .then(res => {
+          notifySuccess(`Logged in as ${this.loginForm.userName}!`);
+          debug(res.data);
+
+          this.loginForm = {
+            userName: undefined,
+            password: undefined
+          };
+
+          this.loggingIn = false;
+        })
+        .catch(err => {
+          notifyError('Invalid user name or password.');
           debug(err);
         });
     }

@@ -3,8 +3,9 @@
 import jpModal from '../jp-modal/jp-modal.vue';
 
 const debug = require('debug')('jeremypridemore-me:components:jp-nav');
-const userValidation = require('../../../../models/user.validation.js');
-const notify = require('../../services/notify.service.js').channel('notify');
+const userValidation = require('../../../../models/user.validation');
+const notify = require('../../services/notify.service').channel('notify');
+const userService = require('../../services/users.service');
 
 debug('Exporting jp-nav component.');
 export default {
@@ -63,11 +64,24 @@ export default {
         });
       }
 
-      notify({
-        classes: 'success',
-        title: 'Success',
-        message: 'Valid user.'
-      });
+      userService.register(this.registerForm)
+        .then(response => {
+          notify({
+            classes: 'success',
+            title: 'Success',
+            message: `Created ${this.registerForm.userName}!`
+          });
+          debug(response.data);
+          this.registering = false;
+        })
+        .catch(err => {
+          notify({
+            classes: 'error',
+            title: 'Error',
+            message: `Well shit, something went wrong making ${this.registerForm.userName}.`
+          });
+          debug(err);
+        });
     }
   },
   components: {

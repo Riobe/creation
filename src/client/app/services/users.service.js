@@ -3,12 +3,12 @@
 const debug = require('debug')('jeremypridemore-me:services:users');
 const axios = require('axios');
 
-function register(userName, password, email) {
-  debug(`Registering user: ${userName} (${email})`);
+function register(user) {
+  debug(`Registering user: ${user.userName} (${user.email})`);
   return axios.post('/api/users', {
-    userName,
-    password,
-    email
+    userName: user.userName,
+    password: user.password,
+    email: user.email
   });
 }
 

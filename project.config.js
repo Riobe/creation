@@ -93,7 +93,7 @@ config.options = {
     logFileChanges: true,
     logLevel: 'info',
     logPrefix: 'browser-sync',
-    notify: true
+    notify: false
   }
 };
 

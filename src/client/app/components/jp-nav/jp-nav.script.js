@@ -59,10 +59,16 @@ export default {
         return notifyError(error);
       }
 
-      userService.register(this.registerForm)
+      return userService.register(this.registerForm)
         .then(res => {
           notifySuccess(`Created ${this.registerForm.userName}!`);
           debug(res.data);
+
+          const originalLoginForm = this.loginForm;
+          this.loginForm = {
+            userName: this.registerForm.userName,
+            password: this.registerForm.password
+          };
 
           this.registerForm = {
             userName: undefined,
@@ -71,6 +77,10 @@ export default {
           };
 
           this.registering = false;
+
+          this.login().then(() => {
+            this.loginForm = originalLoginForm;
+          });
         })
         .catch(err => {
           notifyError(`Well shit, something went wrong making ${this.registerForm.userName}.`);
@@ -84,7 +94,7 @@ export default {
         return;
       }
 
-      loginService.login(this.loginForm.userName, this.loginForm.password)
+      return loginService.login(this.loginForm.userName, this.loginForm.password)
         .then(res => {
           notifySuccess(`Logged in as ${this.loginForm.userName}!`);
           debug(res.data);

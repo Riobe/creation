@@ -37,13 +37,14 @@ export default {
         userName: undefined,
         password: undefined
       },
-      loggingIn: true,
+      loggingIn: false,
       registering: false,
       user: userService.current
     };
   },
   methods: {
     register: function() {
+      debug('Attempting to register a new user.');
       let error = userValidation.validateUserName(this.registerForm.userName);
       if (error) {
         return notifyError(error);
@@ -64,22 +65,14 @@ export default {
           notifySuccess(`Created ${this.registerForm.userName}!`);
           debug(res.data);
 
-          const originalLoginForm = this.loginForm;
-          this.loginForm = {
-            userName: this.registerForm.userName,
-            password: this.registerForm.password
-          };
+          this.login(this.registerForm.userName, this.registerForm.password).then(() => {
+            this.registering = false;
 
-          this.registerForm = {
-            userName: undefined,
-            password: undefined,
-            email: undefined
-          };
-
-          this.registering = false;
-
-          this.login().then(() => {
-            this.loginForm = originalLoginForm;
+            this.registerForm = {
+              userName: undefined,
+              password: undefined,
+              email: undefined
+            };
           });
         })
         .catch(err => {
@@ -87,16 +80,25 @@ export default {
           debug(err);
         });
     },
-    login: function() {
-      debug(this.loginForm);
-      if (userValidation.validatePassword(this.loginForm.password, this.loginForm.userName)) {
+    login: function(userName, password) {
+      debug('Attempting to login');
+      userName = this.loginForm.userName || userName;
+      password = this.loginForm.password || password;
+
+      if (typeof userName === 'object') {
+        debug('Login called with an object as userName. Probably an event. Fix this.');
+        debug(userName);
+        return;
+      }
+
+      if (userValidation.validatePassword(password, userName)) {
         notifyError('Nope, not a valid password. Try again.');
         return;
       }
 
-      return loginService.login(this.loginForm.userName, this.loginForm.password)
+      return loginService.login(userName, password)
         .then(res => {
-          notifySuccess(`Logged in as ${this.loginForm.userName}!`);
+          notifySuccess('Logged in.');
           debug(res.data);
 
           this.loginForm = {
@@ -105,11 +107,18 @@ export default {
           };
 
           this.loggingIn = false;
+
+          this.user = {
+            userName
+          };
         })
         .catch(err => {
           notifyError('Invalid user name or password.');
           debug(err);
         });
+    },
+    logout: function() {
+      return loginService.logout().then(() => this.user = undefined);
     }
   },
   components: {

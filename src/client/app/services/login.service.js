@@ -14,10 +14,12 @@ function login(userName, password) {
   return axios.post('/api/login', {
     userName,
     password,
-  }).then(() => {
+  }).then(res => {
     userService.current = {
       userName
     };
+
+    return res;
   });
 }
 
@@ -34,8 +36,17 @@ function checkLogin() {
     });
 }
 
+function logout() {
+  return axios.post('/api/logout').then(res => {
+    userService.current = undefined;
+
+    return res;
+  });
+}
+
 debug('Exporting login service.');
 module.exports = {
   login,
+  logout,
   checkLogin
 };

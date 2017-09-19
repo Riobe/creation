@@ -17,6 +17,10 @@
 
   color: white;
   background-color: $color-nav-background;
+
+  a {
+    cursor: pointer;
+  }
 }
 
 #not-logged-in, #logged-in {

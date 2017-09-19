@@ -2,27 +2,15 @@ doctype html
 
 nav#navbar
   #page-title Jeremy Pridemore
+
   #not-logged-in(v-if="!user")
-    a#login(@click="loggingIn = true") login
-    jp-modal(v-if="loggingIn", @close="loggingIn = false")
-      .header(slot="title") Login
-      form#login-form(slot="content", @click.stop, @submit.prevent="login")
-        .form-group
-          label(for="user-name-login") User Name:
-          input#user-name-login(type="text", placeholder="Enter a user name", v-model="loginForm.userName")
-        .form-group
-          label(for="password-login") Password:
-          input#password-login(type="password", v-model="loginForm.password")
-        .form-group
-          input(type="submit")
-    .vertical-seperator
     a#register(@click="registering = true") register
     jp-modal(v-if="registering", @close="registering = false")
       .header(slot="title") Register
       form#register-form(slot="content", @click.stop, @submit.prevent="register")
         .form-group
           label(for="user-name-register") User Name:
-          input#user-name-register(type="text", placeholder="Enter a user name", v-model="registerForm.userName")
+          input#user-name-register(type="text", placeholder="Enter a user name", v-model="registerForm.userName" autofocus)
         .form-group
           label(for="password-register") Password:
           input#password-register(type="password", v-model="registerForm.password")
@@ -30,8 +18,24 @@ nav#navbar
           label(for="email-register") Email:
           input#email-register(type="email", v-model="registerForm.email")
         .form-group
-          input(type="submit")
-  #logged-in(v-else)
-    .header {{ user.userName }}
+          input#register-submit(type="submit")
+
     .vertical-seperator
-    .header logout
+
+    a#login(@click="loggingIn = true") login
+    jp-modal(v-if="loggingIn", @close="loggingIn = false")
+      .header(slot="title") Login
+      form#login-form(slot="content", @click.stop, @submit.prevent="login")
+        .form-group
+          label(for="user-name-login") User Name:
+          input#user-name-login(type="text", placeholder="Enter a user name", v-model="loginForm.userName" autofocus)
+        .form-group
+          label(for="password-login") Password:
+          input#password-login(type="password", v-model="loginForm.password")
+        .form-group
+          input#login-submit(type="submit")
+
+  #logged-in(v-else)
+    #current-user {{ user.userName }}
+    .vertical-seperator
+    a#logout(@click="logout") logout

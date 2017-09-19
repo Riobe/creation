@@ -2,7 +2,7 @@
 
 import jpModal from '../jp-modal/jp-modal.vue';
 
-const toastr = require('toastr');
+const notifyService = require('../../services/notify.service.js');
 
 export default {
   data: function() {
@@ -26,7 +26,11 @@ export default {
       this.user = {
         userName: this.loginForm.userName
       };
-      toastr.success('You are logged in as ' + this.user.userName, 'Success');
+      notifyService.publish('notify', {
+        classes: 'success',
+        title: 'Success',
+        message: `You are logged in as ${this.user.userName}!`
+      });
     }
   },
   components: {

@@ -1,0 +1,27 @@
+@import '../../../sass/imports/common';
+
+.notification {
+  height: $height-site-navbar;
+
+  > .title {
+    font-weight: bold;
+    text-align: center;
+    color: $color-font;
+  }
+}
+
+.notification-title {
+  font-weight: bold;
+  text-align: center;
+}
+
+//==============================================================================
+// notification Vue transition
+//==============================================================================
+.notification-enter-active, .notification-leave-active {
+  transition: opacity .5s;
+}
+
+.notification-enter, .notification-leave-to {
+  opacity: 0;
+}

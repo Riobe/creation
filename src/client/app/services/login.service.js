@@ -1,17 +1,17 @@
 'use strict';
 
-const debug = require('debug')('jeremypridemore-me:app');
+const debug = require('debug')('jeremypridemore-me:services:login');
 const axios = require('axios');
 
 function login(userName, password) {
-  debug('Making login call.');
+  debug(`Trying to login as: ${userName}`);
   return axios.post('/api/login', {
-    userName: userName,
-    password: password
+    userName,
+    password,
   });
 }
 
 debug('Exporting login service.');
-export default {
+module.exports = {
   login
 };
